@@ -11,8 +11,8 @@ live in separate files under `main/`.
 - Article-based class with one-column and two-column support.
 - Title panel with title, authors, affiliations, contribution notes, abstract,
   keywords, project links, code links, dataset links, date, and contact email.
-- SYSU-inspired green theme, styled section headings, captions, links, lists,
-  tables, and bibliography.
+- Selectable green, blue, and black themes for the title panel, section
+  headings, captions, links, lists, tables, and bibliography.
 - Common paper helpers: `\paperparagraph`, `\tablestyle`, `\cmark`, `\xmark`,
   compact table column types, `cleveref`, and `natbib`.
 - No external font assets. The template uses standard TeX Live fonts to keep
@@ -154,10 +154,12 @@ This writes the flattened upload entry file directly to `arXiv/main.tex`.
 ```tex
 \documentclass[twocolumn]{main}
 
+\papertheme{green}
+
 \title{Your Paper Title}
 \author[1]{First Author}
 \author[1,2]{Second Author}
-\affiliation[1]{Sun Yat-sen University}
+\affiliation[1]{Example University}
 \affiliation[2]{Example Research Lab}
 
 \abstract{Write a concise summary of the paper.}
@@ -255,6 +257,7 @@ Use these commands before `\begin{document}`:
 
 | Command | Purpose |
 | --- | --- |
+| `\papertheme{green}` | Selects a theme. Available themes: `green`, `blue`, `black`. |
 | `\title{...}` | Paper title shown in the title panel. |
 | `\author[1,2]{Name}` | Adds an author with optional affiliation markers. |
 | `\affiliation[1]{Institution}` | Adds an affiliation. |
@@ -272,7 +275,7 @@ Use these commands in the paper body:
 
 | Command | Purpose |
 | --- | --- |
-| `\paperparagraph{Title}` | Inline green sans-serif bold paragraph heading. |
+| `\paperparagraph{Title}` | Inline theme-colored sans-serif bold paragraph heading. |
 | `\figref{fig:label}` | Figure reference styled as `Figure 1`. |
 | `\tabref{tab:label}` | Table reference styled as `Table 1`. |
 | `\algref{alg:label}` | Algorithm reference styled as `Algorithm 1`. |

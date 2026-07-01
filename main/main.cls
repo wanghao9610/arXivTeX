@@ -42,7 +42,7 @@
 \RequirePackage{algorithm}
 \RequirePackage{algpseudocode}
 \makeatletter
-\let\sysu@algorithmicx@algref\algref
+\let\sa@algorithmicx@algref\algref
 \renewcommand{\theALG@line}{\thealgorithm.\arabic{ALG@line}}
 \renewcommand{\theHALG@line}{\thealgorithm.\arabic{ALG@line}}
 \makeatother
@@ -56,14 +56,16 @@
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{xcolor}
 
-\definecolor{sysugreen}{HTML}{006B4F}
-\definecolor{accentdark}{HTML}{0F6B2A}
+\definecolor{themegreen}{HTML}{006B4F}
+\definecolor{themeblue}{HTML}{0064E0}
+\definecolor{themedark}{HTML}{0F6B2A}
 \definecolor{paperbg}{HTML}{F0F7F4}
 \definecolor{inkfg}{HTML}{1A2E22}
+\definecolor{titlefg}{HTML}{1A2E22}
 \definecolor{rulecolor}{HTML}{006B4F}
-\definecolor{captionlabel}{HTML}{1A8B3D}
 \definecolor{titleframe}{HTML}{BBD8CC}
 \definecolor{metabg}{HTML}{E7F2ED}
+\definecolor{metalink}{HTML}{006B4F}
 \definecolor{LightYellow}{HTML}{FEFBE8}
 \definecolor{LightGreen}{HTML}{EAF6EE}
 \definecolor{LightRed}{HTML}{FDECEA}
@@ -71,6 +73,64 @@
 \definecolor{LightBlue}{HTML}{EAF1FB}
 \definecolor{LightIndigo}{HTML}{EEF0FB}
 \definecolor{LightGray}{HTML}{F2F4F7}
+\colorlet{accentcolor}{themegreen}
+
+\makeatletter
+\newcommand{\sa@sync@linkcolors}{%
+  \@ifpackageloaded{hyperref}{%
+    \hypersetup{%
+      linkcolor=accentcolor,
+      citecolor=accentcolor,
+      urlcolor=accentcolor
+    }%
+  }{}%
+}
+\newcommand{\sa@theme@green}{%
+  \definecolor{themegreen}{HTML}{006B4F}%
+  \definecolor{themedark}{HTML}{0F6B2A}%
+  \definecolor{paperbg}{HTML}{F0F7F4}%
+  \definecolor{inkfg}{HTML}{1A2E22}%
+  \definecolor{titlefg}{HTML}{1A2E22}%
+  \definecolor{rulecolor}{HTML}{006B4F}%
+  \definecolor{titleframe}{HTML}{BBD8CC}%
+  \definecolor{metabg}{HTML}{E7F2ED}%
+  \definecolor{metalink}{HTML}{006B4F}%
+  \colorlet{accentcolor}{themegreen}%
+  \sa@sync@linkcolors
+}
+\newcommand{\sa@theme@blue}{%
+  \definecolor{themedark}{HTML}{004BB5}%
+  \definecolor{paperbg}{HTML}{F1F7FE}%
+  \definecolor{inkfg}{HTML}{172B3A}%
+  \definecolor{titlefg}{HTML}{172B3A}%
+  \definecolor{rulecolor}{HTML}{0064E0}%
+  \definecolor{titleframe}{HTML}{BFD8F5}%
+  \definecolor{metabg}{HTML}{E7F1FD}%
+  \definecolor{metalink}{HTML}{0064E0}%
+  \colorlet{accentcolor}{themeblue}%
+  \sa@sync@linkcolors
+}
+\newcommand{\sa@theme@black}{%
+  \definecolor{themedark}{HTML}{111111}%
+  \definecolor{paperbg}{HTML}{FFFFFF}%
+  \definecolor{inkfg}{HTML}{111111}%
+  \definecolor{titlefg}{HTML}{111111}%
+  \definecolor{rulecolor}{HTML}{111111}%
+  \definecolor{metabg}{HTML}{F3F4F6}%
+  \definecolor{metalink}{HTML}{111111}%
+  \colorlet{accentcolor}{black}%
+  \colorlet{titleframe}{black!22}%
+  \sa@sync@linkcolors
+}
+\newcommand{\papertheme}[1]{%
+  \@ifundefined{sa@theme@#1}{%
+    \PackageError{main}{Unknown paper theme `#1'}{Available themes are green, blue, and black.}%
+  }{%
+    \csname sa@theme@#1\endcsname
+  }%
+}
+\papertheme{green}
+\makeatother
 
 % Links and bibliography
 \RequirePackage{url}
@@ -80,9 +140,9 @@
 
 \hypersetup{
   colorlinks,
-  linkcolor=sysugreen,
-  citecolor=sysugreen,
-  urlcolor=sysugreen
+  linkcolor=accentcolor,
+  citecolor=accentcolor,
+  urlcolor=accentcolor
 }
 
 \def\bibfont{\small}
@@ -109,19 +169,19 @@
 \RequirePackage{titlesec}
 
 \titleformat{\section}
-  {\Large\sffamily\bfseries\color{sysugreen}}
+  {\Large\sffamily\bfseries\color{accentcolor}}
   {\thesection}
   {0.6em}
   {}
 
 \titleformat{\subsection}
-  {\large\sffamily\bfseries\color{sysugreen}}
+  {\large\sffamily\bfseries\color{accentcolor}}
   {\thesubsection}
   {0.5em}
   {}
 
 \titleformat{\subsubsection}
-  {\normalsize\sffamily\bfseries\color{sysugreen}}
+  {\normalsize\sffamily\bfseries\color{accentcolor}}
   {\thesubsubsection}
   {0.4em}
   {}
@@ -132,8 +192,8 @@
 
 % Captions
 \RequirePackage{caption}
-\DeclareCaptionLabelSeparator{pipe}{\enspace\textcolor{inkfg}{|}\enspace}
-\DeclareCaptionFormat{elegant}{{\sffamily\bfseries\color{inkfg}#1#2}{\small\color{inkfg}#3}}
+\DeclareCaptionLabelSeparator{pipe}{\enspace\textcolor{black}{|}\enspace}
+\DeclareCaptionFormat{elegant}{{\sffamily\bfseries\color{black}#1#2}{\small\color{black}#3}}
 \captionsetup{
   singlelinecheck=false,
   format=elegant,
@@ -144,15 +204,15 @@
 % Small helpers copied out of the paper body into the template layer.
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
-\newcommand{\headbf}[1]{{\sffamily\bfseries\color{sysugreen}#1}}
-\newcommand{\paperparagraph}[1]{\par\noindent{\sffamily\bfseries\color{sysugreen}\spaceskip=0.35em #1.}\hspace{0.35em}\ignorespaces}
+\newcommand{\headbf}[1]{{\sffamily\bfseries\color{accentcolor}#1}}
+\newcommand{\paperparagraph}[1]{\par\noindent{\sffamily\bfseries\color{accentcolor}\spaceskip=0.35em #1.}\hspace{0.35em}\ignorespaces}
 \providecommand{\figref}[1]{}
 \renewcommand{\figref}[1]{Figure~\ref{#1}}
 \providecommand{\tabref}[1]{}
 \renewcommand{\tabref}[1]{Table~\ref{#1}}
 \makeatletter
-\renewcommand{\algref}[1]{\@ifnextchar\bgroup{\sysu@algline@ref{#1}}{Algorithm~\ref{#1}\xspace}}
-\newcommand{\sysu@algline@ref}[2]{\sysu@algorithmicx@algref{#1}{#2}}
+\renewcommand{\algref}[1]{\@ifnextchar\bgroup{\sa@algline@ref{#1}}{Algorithm~\ref{#1}\xspace}}
+\newcommand{\sa@algline@ref}[2]{\sa@algorithmicx@algref{#1}{#2}}
 \makeatother
 \providecommand{\eqnref}[1]{}
 \renewcommand{\eqnref}[1]{Equation~\eqref{#1}}
@@ -174,19 +234,21 @@
 \newcommand{\sa@keywords}{}
 \newcommand{\sa@metadatalist}{}
 \newcommand{\sa@metadatasep}{\par\vspace{0.15em}}
+\newlength{\sa@keywordsTopSkip}
+\setlength{\sa@keywordsTopSkip}{0.22cm}
 
 \newcommand{\sa@sups}[1]{\ifblank{#1}{}{\textsuperscript{\ensuremath{#1}}}}
 \newcommand{\sa@authorformat}[2][]{%
-  {\sffamily\bfseries\color{inkfg}#2\sa@sups{#1}}%
+  {\sffamily\bfseries\color{titlefg}#2\sa@sups{#1}}%
 }
 \newcommand{\sa@affiliationformat}[2][]{%
-  {\small\color{inkfg}\sa@sups{#1}\ifblank{#1}{}{\ }#2}%
+  {\small\color{titlefg}\sa@sups{#1}\ifblank{#1}{}{\ }#2}%
 }
 \newcommand{\sa@contributionformat}[2][]{%
-  {\small\color{inkfg}\sa@sups{#1}\ifblank{#1}{}{\ }\textit{#2}}%
+  {\small\color{titlefg}\sa@sups{#1}\ifblank{#1}{}{\ }\textit{#2}}%
 }
 \newcommand{\sa@metadataformat}[2][]{%
-  {\small\sffamily\color{inkfg}\ifblank{#1}{}{\textbf{#1}\enspace}#2}%
+  {\small\sffamily\color{titlefg}\ifblank{#1}{}{\textbf{#1}\enspace}#2}%
 }
 
 \renewcommand{\title}[1]{\gdef\sa@title{#1}}
@@ -198,7 +260,7 @@
 \newcommand{\affiliation}[2][]{%
   \ifdefempty{\sa@affiliationlist}
     {\gdef\sa@affiliationlist{\sa@affiliationformat[#1]{#2}}}
-    {\gappto\sa@affiliationlist{\enspace\textcolor{inkfg}{\textperiodcentered}\enspace\sa@affiliationformat[#1]{#2}}}%
+    {\gappto\sa@affiliationlist{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace\sa@affiliationformat[#1]{#2}}}%
 }
 \newcommand{\contribution}[2][]{%
   \ifdefempty{\sa@contributionlist}
@@ -214,11 +276,12 @@
 }
 
 % Metadata convenience commands
-\newcommand{\email}[1]{\href{mailto:#1}{\texttt{#1}}}
-\newcommand{\code}[1]{\metadata[\saGithubIcon~Code:]{\url{#1}}}
-\newcommand{\demo}[1]{\metadata[\saPlayIcon~Demo:]{\url{#1}}}
-\newcommand{\project}[1]{\metadata[\saGlobeIcon~Project:]{\url{#1}}}
-\newcommand{\dataset}[1]{\metadata[\saDatabaseIcon~Data:]{\url{#1}}}
+\newcommand{\sa@metadataurl}[1]{\href{#1}{\textcolor{metalink}{\nolinkurl{#1}}}}
+\newcommand{\email}[1]{\href{mailto:#1}{\textcolor{metalink}{\texttt{#1}}}}
+\newcommand{\code}[1]{\metadata[\saGithubIcon~Code:]{\sa@metadataurl{#1}}}
+\newcommand{\demo}[1]{\metadata[\saPlayIcon~Demo:]{\sa@metadataurl{#1}}}
+\newcommand{\project}[1]{\metadata[\saGlobeIcon~Project:]{\sa@metadataurl{#1}}}
+\newcommand{\dataset}[1]{\metadata[\saDatabaseIcon~Data:]{\sa@metadataurl{#1}}}
 \newcommand{\correspondence}[1]{\metadata[\saEnvelopeIcon~Contact:]{#1}}
 \newcommand{\paperdate}[1]{\metadata[\saCalendarIcon~Date:]{#1}}
 \renewcommand{\date}[1]{\paperdate{#1}}
@@ -241,7 +304,7 @@
   ]
     \raggedright
     \nohyphens
-    {\setstretch{1.35}{\huge\sffamily\bfseries\color{inkfg}\sa@title\par}}
+    {\setstretch{1.35}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
     \vskip 0.10cm
     {\sa@authorlist\par}
     \ifdefempty{\sa@affiliationlist}{}{%
@@ -256,11 +319,11 @@
       \vskip 0.10cm
       {\color{rulecolor!85}\rule{\linewidth}{0.65pt}}\par
       \vskip 0.10cm
-      {\setstretch{1.08}\small\color{inkfg}\sa@abstract\par}
+      {\setstretch{1.08}\small\color{titlefg}\sa@abstract\par}
     }
     \ifdefempty{\sa@keywords}{}{%
-      \vskip 0.08cm
-      {\small\sffamily\textbf{\color{inkfg}Keywords:}\enspace\color{inkfg}\sa@keywords\par}
+      \vskip \sa@keywordsTopSkip
+      {\small\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
     }
     \ifdefempty{\sa@metadatalist}{}{%
       \vskip 0.10cm
