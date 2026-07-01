@@ -12,7 +12,7 @@ live in their own files under `main/`.
   keywords, project links, code links, dataset links, date, and contact email.
 - Selectable green, blue, and black themes for the title panel, section
   headings, captions, links, lists, tables, and bibliography.
-- Common paper helpers: `\paperparagraph`, `\tablestyle`, `\cmark`, `\xmark`,
+- Common paper helpers: `\parahead`, `\tablestyle`, `\cmark`, `\xmark`,
   compact table column types, `cleveref`, and `natbib`.
 - No external font assets. The template uses standard TeX Live fonts to keep
   GitHub and arXiv submissions portable.
@@ -32,8 +32,9 @@ starter template:
 |   +-- secs/             # Main paper section fragments
 |   |   +-- 00_abstract.tex
 |   |   +-- 01_introduction.tex
-|   |   +-- 02_method.tex
-|   |   +-- 03_experiments.tex
+|   |   +-- 02_related.tex
+|   |   +-- 03_method.tex
+|   |   +-- 04_experiments.tex
 |   |   +-- 09_conclusion.tex
 |   |   +-- 10_results.tex
 |   |   +-- 11_reproducibility.tex
@@ -271,7 +272,7 @@ Use these commands in the paper body:
 
 | Command | Purpose |
 | --- | --- |
-| `\paperparagraph{Title}` | Inline theme-colored sans-serif bold paragraph heading. |
+| `\parahead{Title}` | Inline theme-colored sans-serif bold paragraph heading. |
 | `\figref{fig:label}` | Figure reference styled as `Figure 1`. |
 | `\tabref{tab:label}` | Table reference styled as `Table 1`. |
 | `\algref{alg:label}` | Algorithm reference styled as `Algorithm 1`. |
