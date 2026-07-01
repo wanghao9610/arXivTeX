@@ -1,0 +1,32 @@
+name: Sync overleaf branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'main/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Split main/ into a standalone branch
+        run: git subtree split --prefix=main -b overleaf-tmp
+
+      - name: Force-push to overleaf branch
+        run: git push origin overleaf-tmp:overleaf --force
