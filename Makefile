@@ -4,7 +4,7 @@ MAIN ?= main.tex
 OUT_DIR ?= .temp
 ARXIV_DIR ?= arXiv
 
-.PHONY: all arxiv clean distclean
+.PHONY: all arxiv
 
 all:
 	mkdir -p $(OUT_DIR)
@@ -28,10 +28,3 @@ arxiv:
 		find $(MAIN_DIR)/srcs -type f \( -iname '*.pdf' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.eps' -o -iname '*.ps' -o -iname '*.tif' -o -iname '*.tiff' -o -iname '*.pdf_tex' -o -iname '*.pdf_t' -o -iname '*.pstex_t' -o -iname '*.svg' \) -exec sh -c 'for file do rel=$${file#$(MAIN_DIR)/}; mkdir -p "$(ARXIV_DIR)/$$(dirname "$$rel")"; cp -p "$$file" "$(ARXIV_DIR)/$$rel"; done' sh {} +; \
 	fi
 	@cd $(ARXIV_DIR) && find . -type f | sed 's#^\./##' | sort > MANIFEST.txt
-
-clean:
-	cd $(MAIN_DIR) && $(LATEXMK) -c -outdir=$(abspath $(OUT_DIR)) $(MAIN)
-
-distclean:
-	cd $(MAIN_DIR) && $(LATEXMK) -C -outdir=$(abspath $(OUT_DIR)) $(MAIN)
-	rm -rf $(ARXIV_DIR)

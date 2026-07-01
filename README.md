@@ -2,22 +2,50 @@
 
 [![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fwanghao9610%2FarXivTeX%2Farchive%2Frefs%2Fheads%2Fmain.zip)
 
+**Language:** English | [简体中文](README.zh-CN.md)
+
 A compact, arXiv-style LaTeX template for research papers. The project follows
 a modular organization: `main/main.tex` is the entry point, while sections,
 figures, tables, algorithms, appendix material, and bibliography data each
 live in their own files under `main/`.
 
-## Features
+## Contents
 
-- Article-based class with one-column and two-column support.
-- Title panel with title, authors, affiliations, contribution notes, abstract,
-  keywords, project links, code links, dataset links, date, and contact email.
-- Selectable green, blue, and black themes for the title panel, section
-  headings, captions, links, lists, tables, and bibliography.
-- Common paper helpers: `\parahead`, `\tablestyle`, `\cmark`, `\xmark`,
-  compact table column types, `cleveref`, and `natbib`.
-- No external font assets. The template uses standard TeX Live fonts to keep
-  GitHub and arXiv submissions portable.
+- [Key Features](#features)
+- [Requirements](#requirements)
+- [Project Organization](#project-organization)
+- [Selectable Themes](#selectable-themes)
+- [Class API](#class-api)
+- [Quick Start](#quick-start)
+- [Minimal Example](#minimal-example)
+- [Adding Content](#adding-content)
+- [arXiv Pre-Print](#arxiv-pre-print)
+- [Venue Template](#venue-template)
+- [License](#license)
+
+## Key Features
+
+- **Article-Based Class**: One-column and two-column layouts.
+- **Title Panel**: Title, authors, affiliations, abstract, keywords, and
+  code/project/dataset links in one block.
+- **Selectable Themes**: Green, blue, and black color palettes.
+- **Paper Helpers**: `\parahead`, `\headbf`, `\tablestyle`, `\cmark`,
+  `\xmark`, compact table columns, `cleveref`, and `natbib`.
+- **Portable Fonts**: Standard TeX Live fonts only, no external assets.
+- **Effortless Conversion**: `make arxiv` for an [arXiv Pre-print](#arxiv-pre-print); the `convert-template` skill for
+  [Venue Templates](#venue-template).
+
+## Requirements
+
+- A TeX Live distribution (2022 or later recommended) with `latexmk` on
+  `PATH`. The class loads common packages such as `fontawesome5`,
+  `nicematrix`, `siunitx`, and `tcolorbox`, so a full/`scheme-full` install
+  avoids missing-package errors.
+- `latexpand` and `perl` for `make arxiv` (both ship with most TeX Live
+  installs).
+- Bibliography entries are compiled automatically by `latexmk` from
+  `main/main.bib` using the `unsrtnat` style; no separate BibTeX setup is
+  required.
 
 ## Project Organization
 
@@ -40,6 +68,7 @@ starter template:
 |   |   +-- 09_conclusion.tex
 |   |   +-- 10_results.tex
 |   |   +-- 11_reproducibility.tex
+|   |   +-- 12_impact.tex
 |   +-- figs/             # Figure environment wrappers
 |   |   +-- 00_teaser.tex
 |   |   +-- 10_figure.tex
@@ -51,6 +80,8 @@ starter template:
 |       +-- 00_example.tex
 |       +-- 10_procedure.tex
 +-- arXiv/                # Generated flattened submission package
++-- submit/               # Generated submission copies
++-- templates/            # Unzipped venue template files
 +-- .temp/                # Generated build files
 +-- .vscode/settings.json # Optional LaTeX Workshop settings
 +-- Makefile              # Build commands
@@ -117,6 +148,49 @@ Keep wrapper and asset basenames aligned (for example,
 The same two-digit prefix scheme applies to `main/secs/`, `main/figs/`,
 `main/figs/srcs/`, `main/tabs/`, and `main/algs/`.
 
+## Themes
+
+Set `\papertheme{...}` to `green`, `blue`, or `black`. Below is the first page
+of the example paper rendered with each theme.
+
+| `green` | `blue` | `black` |
+| --- | --- | --- |
+| ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
+
+## Class API
+
+Use these commands before `\begin{document}`:
+
+| Command | Purpose |
+| --- | --- |
+| `\papertheme{green}` | Selects a theme. Available themes: `green`, `blue`, `black`. |
+| `\title{...}` | Paper title shown in the title panel. |
+| `\author[1,2]{Name}` | Adds an author with optional affiliation markers. |
+| `\affiliation[1]{Institution}` | Adds an affiliation. |
+| `\contribution[\dagger]{Text}` | Adds contribution or equal-contribution notes. |
+| `\abstract{...}` | Adds the abstract to the title panel. |
+| `\keywords{...}` | Adds keywords below the abstract. |
+| `\code{URL}` | Adds a code link. |
+| `\project{URL}` | Adds a project-page link. |
+| `\dataset{URL}` | Adds a dataset link. |
+| `\demo{URL}` | Adds a demo link. |
+| `\correspondence{...}` | Adds contact information. |
+| `\metadata[Label:]{Value}` | Adds a custom metadata row. |
+
+Use these commands in the paper body:
+
+| Command | Purpose |
+| --- | --- |
+| `\parahead{Title}` | Inline theme-colored sans-serif bold paragraph heading, followed by a period and a space. |
+| `\headbf{Text}` | Theme-colored sans-serif bold text, with no automatic punctuation or spacing. |
+| `\figref{fig:label}` | Figure reference styled as `Figure 1`. |
+| `\tabref{tab:label}` | Table reference styled as `Table 1`. |
+| `\algref{alg:label}` | Algorithm reference styled as `Algorithm 1`. |
+| `\eqnref{eq:label}` | Equation reference styled as `Equation (1)`. |
+| `\tablestyle{4pt}{1.1}` | Sets table column spacing and row stretch. |
+| `\cmark`, `\xmark` | Check and cross symbols for comparison tables. |
+| `x`, `y`, `z`, `P`, `Y` column types | Compact table column helpers. |
+
 ## Quick Start
 
 Compile the example:
@@ -126,18 +200,14 @@ make
 ```
 
 The default build target writes generated files to `.temp/`, including
-`.temp/main.pdf`.
+`.temp/main.pdf`. Override `MAIN_DIR`, `MAIN`, or `OUT_DIR` to point at a
+different source tree, entry file, or output directory, for example
+`OUT_DIR=build make`.
 
 Alternatively, run LaTeX directly:
 
 ```bash
 cd main && latexmk -pdf -outdir=../.temp main.tex
-```
-
-Clean generated files:
-
-```bash
-make clean
 ```
 
 Prepare a flattened arXiv source bundle:
@@ -238,7 +308,13 @@ includes appendix-specific modules:
 
 \input{secs/10_results.tex}
 \input{secs/11_reproducibility.tex}
+\input{secs/12_impact.tex}
 ```
+
+`main/secs/12_impact.tex` is a starter broader-impact-and-compute-resources
+section — common at venues (e.g. NeurIPS) that require reporting societal
+impact and the hardware budget behind reported results. Remove the
+`\input` line if your target venue does not require it.
 
 Appendix-specific figures, tables, and algorithms should use the same prefix
 range:
@@ -250,80 +326,72 @@ range:
 Comment this line when drafting a main-body-only paper. Keep it enabled when you
 want the example PDF to include the appendix pages.
 
-## Themes
+## arXiv Pre-print
 
-Set `\papertheme{...}` to `green`, `blue`, or `black`. Below is the first page
-of the example paper rendered with each theme.
+Run `make arxiv` after editing to produce a flattened, submission-ready copy
+of the paper:
 
-| `green` | `blue` | `black` |
-| --- | --- | --- |
-| ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
-
-## Class API
-
-Use these commands before `\begin{document}`:
-
-| Command | Purpose |
-| --- | --- |
-| `\papertheme{green}` | Selects a theme. Available themes: `green`, `blue`, `black`. |
-| `\title{...}` | Paper title shown in the title panel. |
-| `\author[1,2]{Name}` | Adds an author with optional affiliation markers. |
-| `\affiliation[1]{Institution}` | Adds an affiliation. |
-| `\contribution[\dagger]{Text}` | Adds contribution or equal-contribution notes. |
-| `\abstract{...}` | Adds the abstract to the title panel. |
-| `\keywords{...}` | Adds keywords below the abstract. |
-| `\code{URL}` | Adds a code link. |
-| `\project{URL}` | Adds a project-page link. |
-| `\dataset{URL}` | Adds a dataset link. |
-| `\demo{URL}` | Adds a demo link. |
-| `\correspondence{...}` | Adds contact information. |
-| `\metadata[Label:]{Value}` | Adds a custom metadata row. |
-
-Use these commands in the paper body:
-
-| Command | Purpose |
-| --- | --- |
-| `\parahead{Title}` | Inline theme-colored sans-serif bold paragraph heading. |
-| `\figref{fig:label}` | Figure reference styled as `Figure 1`. |
-| `\tabref{tab:label}` | Table reference styled as `Table 1`. |
-| `\algref{alg:label}` | Algorithm reference styled as `Algorithm 1`. |
-| `\eqnref{eq:label}` | Equation reference styled as `Equation (1)`. |
-| `\tablestyle{4pt}{1.1}` | Sets table column spacing and row stretch. |
-| `\cmark`, `\xmark` | Check and cross symbols for comparison tables. |
-| `x`, `y`, `z`, `P`, `Y` column types | Compact table column helpers. |
-
-## Repository Layout
-
-Refer to [Project Organization](#project-organization) for the directory
-tree and naming conventions.
-
-## arXiv Notes
-
-- For a modular working tree, run `make arxiv` after editing. The command runs
-  `latexpand main.tex > ../arXiv/main.tex` from `main/`, then prepares the
-  rest of `arXiv/` with the local class, bibliography, and figure assets.
-- Submit the contents of `arXiv/`. The package entry point is
+- The command runs `latexpand main.tex > ../arXiv/main.tex` from `main/`, then
+  fills out the rest of `arXiv/` with the local class, bibliography, and
+  figure assets. Submit the contents of `arXiv/` — the package entry point is
   `arXiv/main.tex`.
-- The automation copies `main/*.cls`, `main/*.sty`, `main/*.bst`,
-  `main/*.bib`, `main/*.bbx`, and `main/*.cbx` files. It copies source-tree
-  assets from `main/figs/srcs/` into `arXiv/srcs/` and rewrites the flattened
-  `arXiv/main.tex` paths accordingly. It also copies `main/srcs/` when
-  present, to support flatter source-tree layouts.
-- Keep project-specific macros in `main/main.tex`, not in
-  `main/main.cls`.
-- Prefer PDF, PNG, or JPG figures and avoid absolute file paths.
-- Do not submit `.temp/`, editor settings, SyncTeX files, logs, or local preview
-  PDFs.
-- If arXiv reports a missing package, move that feature from the class into the
-  paper source or remove it before submission.
+- It copies `main/*.cls`, `main/*.sty`, `main/*.bst`, `main/*.bib`,
+  `main/*.bbx`, and `main/*.cbx` files, copies source-tree assets from
+  `main/figs/srcs/` into `arXiv/srcs/` and rewrites the flattened
+  `arXiv/main.tex` paths accordingly, and also copies `main/srcs/` when
+  present to support flatter source-tree layouts.
 
-Advanced usage:
+A few things to keep in mind:
+
+- Keep project-specific macros in `main/main.tex`, not in `main/main.cls`.
+- Prefer PDF, PNG, or JPG figures and avoid absolute file paths.
+- Do not submit `.temp/`, editor settings, SyncTeX files, logs, or local
+  preview PDFs.
+- If arXiv reports a missing package, move that feature from the class into
+  the paper source or remove it before submission.
+
+Advanced usage — override the entry point or output directory:
 
 ```bash
-MAIN=submission.tex ARXIV_DIR=submission-arXiv make arxiv
+MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
 ```
+
+## Venue Template
+
+A `convert-template` skill (bundled for both Claude Code and Codex, under
+`.claude/skills/convert-template/` and `.codex/skills/convert-template/`)
+converts this paper into a submission copy for an officially-supplied venue
+LaTeX template — for example CVPR, ICCV, or NeurIPS.
+
+1. Get the official author kit for your target venue (a zip containing its
+   `.cls`/`.sty`/`.bst` files and a sample `.tex`) and have it ready locally.
+   The skill never fetches or guesses a venue template itself — you always
+   supply the official zip.
+2. Ask your agent (in Claude Code or Codex) to convert the paper, giving it
+   the zip's path and which mode you want, for example:
+   > Convert this paper to the CVPR template at `~/Downloads/cvpr2025.zip`,
+   > anonymous review mode.
+
+   or
+
+   > Now generate the camera-ready version for the same CVPR template.
+3. The agent unpacks the kit into `templates/<venue>/`, then generates a
+   standalone, compilable copy under `submit/<venue>/` — including a
+   `compat.sty` shim so this template's helpers (`\parahead`, `\figref`,
+   `\tablestyle`, the compact column types, etc.) keep working under the
+   venue's own class, and a new `main.tex` with the venue's native
+   title/author macros populated from this paper's metadata.
+4. Choose `anonymous` mode for a blind-review draft (author names,
+   affiliations, and code/project/dataset links are redacted) or
+   `camera-ready` mode for the final submission with full author metadata.
+
+`main/` and `main/main.bib` are never modified by this process, and neither
+are the official venue files it copies in. `templates/` and `submit/` are
+gitignored, since venue kits are usually copyrighted and `submit/<venue>/`
+is fully regenerated from `main/` each time you re-run the conversion — edit
+the paper under `main/`, then re-run the skill to refresh the submission
+copy.
 
 ## License
 
-This template is released under the MIT License. Update the license if your
-paper or institution requires a different policy.
+This template is released under the MIT License.
