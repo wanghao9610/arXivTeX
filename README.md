@@ -1,10 +1,9 @@
 # arXiv TeX Template
 
-A compact arXiv-style LaTeX template extracted and generalized from the X2SAM
-paper layouts. The repository now follows the same modular paper organization
-used by the ECCV-style project: `main/main.tex` is the entry point, while
-sections, figures, tables, algorithms, appendix material, and bibliography data
-live in separate files under `main/`.
+A compact, arXiv-style LaTeX template for research papers. The project follows
+a modular organization: `main/main.tex` is the entry point, while sections,
+figures, tables, algorithms, appendix material, and bibliography data each
+live in their own files under `main/`.
 
 ## Features
 
@@ -54,7 +53,7 @@ starter template:
 +-- Makefile              # Build commands
 ```
 
-Recommended convention:
+The following conventions keep the tree consistent as a paper grows.
 
 ### File naming
 
@@ -123,13 +122,10 @@ Compile the example:
 make
 ```
 
-The default build target writes generated files to `.temp/`:
+The default build target writes generated files to `.temp/`, including
+`.temp/main.pdf`.
 
-```text
-.temp/main.pdf
-```
-
-or run LaTeX directly:
+Alternatively, run LaTeX directly:
 
 ```bash
 cd main && latexmk -pdf -outdir=../.temp main.tex
@@ -286,7 +282,8 @@ Use these commands in the paper body:
 
 ## Repository Layout
 
-See [Project Organization](#project-organization).
+Refer to [Project Organization](#project-organization) for the directory
+tree and naming conventions.
 
 ## arXiv Notes
 
@@ -298,9 +295,8 @@ See [Project Organization](#project-organization).
 - The automation copies `main/*.cls`, `main/*.sty`, `main/*.bst`,
   `main/*.bib`, `main/*.bbx`, and `main/*.cbx` files. It copies source-tree
   assets from `main/figs/srcs/` into `arXiv/srcs/` and rewrites the flattened
-  `arXiv/main.tex` paths accordingly. It also copies `main/srcs/` and
-  `main/asts/` when present, matching the
-  flatter X2SAM-style source tree.
+  `arXiv/main.tex` paths accordingly. It also copies `main/srcs/` when
+  present, to support flatter source-tree layouts.
 - Keep project-specific macros in `main/main.tex`, not in
   `main/main.cls`.
 - Prefer PDF, PNG, or JPG figures and avoid absolute file paths.

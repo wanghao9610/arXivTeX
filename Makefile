@@ -27,9 +27,6 @@ arxiv:
 	@if [ -d $(MAIN_DIR)/srcs ]; then \
 		find $(MAIN_DIR)/srcs -type f \( -iname '*.pdf' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.eps' -o -iname '*.ps' -o -iname '*.tif' -o -iname '*.tiff' -o -iname '*.pdf_tex' -o -iname '*.pdf_t' -o -iname '*.pstex_t' -o -iname '*.svg' \) -exec sh -c 'for file do rel=$${file#$(MAIN_DIR)/}; mkdir -p "$(ARXIV_DIR)/$$(dirname "$$rel")"; cp -p "$$file" "$(ARXIV_DIR)/$$rel"; done' sh {} +; \
 	fi
-	@if [ -d $(MAIN_DIR)/asts ]; then \
-		find $(MAIN_DIR)/asts -type f -exec sh -c 'for file do rel=$${file#$(MAIN_DIR)/}; mkdir -p "$(ARXIV_DIR)/$$(dirname "$$rel")"; cp -p "$$file" "$(ARXIV_DIR)/$$rel"; done' sh {} +; \
-	fi
 	@cd $(ARXIV_DIR) && find . -type f | sed 's#^\./##' | sort > MANIFEST.txt
 
 clean:
