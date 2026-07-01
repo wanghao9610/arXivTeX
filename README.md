@@ -1,5 +1,7 @@
 # arXiv TeX Template
 
+[![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fwanghao9610%2FarXivTeX%2Farchive%2Frefs%2Fheads%2Fmain.zip)
+
 A compact, arXiv-style LaTeX template for research papers. The project follows
 a modular organization: `main/main.tex` is the entry point, while sections,
 figures, tables, algorithms, appendix material, and bibliography data each
