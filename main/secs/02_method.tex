@@ -1,0 +1,30 @@
+\section{Method}
+
+Keep paper-specific definitions in \texttt{main.tex}. For example,
+\texttt{\string\method} is defined by the example paper rather than by the
+class, because every project will use different method names and symbols.
+
+\subsection{Writing Modules}
+
+Use the section files in \texttt{secs/} to keep long manuscripts readable.
+Small papers can also place all content directly in \texttt{main.tex}. The class
+does not require a particular project structure.
+
+\subsection{Math and References}
+
+Common math packages are preloaded. For instance, a method can optimize
+\begin{equation}
+  \mathcal{L} = \lambda_1 \mathcal{L}_{\mathrm{task}}
+    + \lambda_2 \mathcal{L}_{\mathrm{reg}},
+  \label{eq:loss}
+\end{equation}
+where \(\lambda_1\) and \(\lambda_2\) balance task and regularization terms.
+\eqnref{eq:loss} is referenced with \texttt{\string\eqnref}; citations use
+\texttt{natbib}, as in \cite{lamport1994latex,mittelbach2004latex}.
+
+\subsection{Algorithm Modules}
+
+Algorithm blocks can live in \texttt{algs/} and be included where they are
+discussed. \algref{alg:example} shows the expected structure.
+
+\input{algs/00_example.tex}

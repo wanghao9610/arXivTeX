@@ -1,0 +1,13 @@
+\begin{algorithm}[t]
+  \caption{Appendix Reproducibility Procedure}
+  \label{alg:app_reproducibility}
+  \begin{algorithmic}[1]
+    \Require Released code, configuration file, dataset split, random seed
+    \Ensure Reproduced metrics and generated artifacts
+    \State Create the environment from the documented dependency versions
+    \State Download or generate the dataset split specified in the appendix
+    \State Run training or inference with the released configuration
+    \State Evaluate predictions with the documented metric script
+    \State Compare results against the reported table within expected tolerance
+  \end{algorithmic}
+\end{algorithm}

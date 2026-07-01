@@ -1,0 +1,14 @@
+\begin{algorithm}[t]
+  \caption{Example Training Loop}
+  \label{alg:example}
+  \begin{algorithmic}[1]
+    \Require Dataset \(\mathcal{D}\), model \(f_\theta\), learning rate \(\eta\)
+    \Ensure Updated parameters \(\theta\)
+    \For{each mini-batch \(B \subset \mathcal{D}\)}
+      \State Compute predictions \(\hat{y} \gets f_\theta(B)\)
+      \State Evaluate loss \(\mathcal{L}(\hat{y}, y)\)
+      \State Update parameters \(\theta \gets \theta - \eta \nabla_\theta \mathcal{L}\)
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
