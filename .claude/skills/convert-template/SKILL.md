@@ -81,8 +81,35 @@ Ask only what is missing:
      `\input{compat.sty}`.
    - Title, author, affiliation, abstract, and keyword values parsed
      out of the existing `main/main.tex` preamble (its
-     `\title`/`\author`/`\affiliation`/`\abstract`/`\keywords` calls),
-     re-emitted using the venue's own native macros from step 2.
+     `\title`/`\author`/`\affiliation`/`\abstract`/`\keywords` calls).
+     These calls are not always made directly in `main.tex` — e.g. this
+     repo's `main/main.tex` preamble does
+     `\input{secs/00_abstract.tex}`, and the `\abstract{...}`/
+     `\keywords{...}` calls actually live inside that file. Follow any
+     `\input` chains reachable from the `main/main.tex` preamble (before
+     `\begin{document}`) to find where these values are really set —
+     do not assume they're all literally in `main.tex`.
+   - Re-emit the extracted title/author/affiliation/abstract/keyword
+     text using the venue's own native macros from step 2. In
+     particular, the abstract and keywords text pulled from
+     `secs/00_abstract.tex`'s `\abstract{...}`/`\keywords{...}` is
+     extracted and re-emitted through the venue's native
+     abstract/keywords mechanism (e.g. an `abstract` environment,
+     `\begin{abstract}...\end{abstract}`, or the venue's own
+     `\keywords{...}` macro) — `secs/00_abstract.tex` itself is NOT
+     `\input`-ed verbatim as a preamble call in the new `main.tex`,
+     since the venue class won't define arXivTeX's `\abstract`/
+     `\keywords` macros (or will define incompatible ones), causing a
+     compile error or silently wrong output. This applies only to that
+     title-metadata file; the rest of `secs/` (body sections such as
+     `01_introduction.tex`) is still `\input` normally inside
+     `\begin{document}`, unchanged from below.
+   - Any paper-specific `\newcommand`/`\renewcommand` definitions from
+     `main/main.tex`'s own preamble (e.g. this repo's
+     `\newcommand{\method}{MethodName\xspace}`) — these aren't
+     arXivTeX-framework macros, so they won't be in `compat.sty`, but
+     the body content still relies on them. Carry them over into the
+     generated `main.tex`'s preamble as-is.
    - The same `\input{secs/...}` order as `main/main.tex`, plus
      `\input{appx.tex}` if the original includes it.
    - `\bibliographystyle{...}` set to whatever the venue kit expects,
