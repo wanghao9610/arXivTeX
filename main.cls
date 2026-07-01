@@ -57,7 +57,7 @@
 \RequirePackage{xcolor}
 
 \definecolor{themegreen}{HTML}{006B4F}
-\definecolor{themeblue}{HTML}{0064E0}
+\definecolor{themeblue}{HTML}{0052C7}
 \definecolor{themedark}{HTML}{0F6B2A}
 \definecolor{paperbg}{HTML}{F0F7F4}
 \definecolor{inkfg}{HTML}{1A2E22}
@@ -103,10 +103,10 @@
   \definecolor{paperbg}{HTML}{F1F7FE}%
   \definecolor{inkfg}{HTML}{172B3A}%
   \definecolor{titlefg}{HTML}{172B3A}%
-  \definecolor{rulecolor}{HTML}{0064E0}%
+  \definecolor{rulecolor}{HTML}{0052C7}%
   \definecolor{titleframe}{HTML}{BFD8F5}%
   \definecolor{metabg}{HTML}{E7F1FD}%
-  \definecolor{metalink}{HTML}{0064E0}%
+  \definecolor{metalink}{HTML}{0052C7}%
   \colorlet{accentcolor}{themeblue}%
   \sa@sync@linkcolors
 }
