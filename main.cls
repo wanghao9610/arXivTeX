@@ -205,7 +205,7 @@
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
 \newcommand{\headbf}[1]{{\sffamily\bfseries\color{accentcolor}#1}}
-\newcommand{\paperparagraph}[1]{\par\noindent{\sffamily\bfseries\color{accentcolor}\spaceskip=0.35em #1.}\hspace{0.35em}\ignorespaces}
+\newcommand{\parahead}[1]{\par\noindent{\sffamily\bfseries\color{accentcolor}\spaceskip=0.35em #1.}\hspace{0.35em}\ignorespaces}
 \providecommand{\figref}[1]{}
 \renewcommand{\figref}[1]{Figure~\ref{#1}}
 \providecommand{\tabref}[1]{}
