@@ -36,7 +36,7 @@
   `\xmark`、紧凑型表格列类型、`cleveref` 以及 `natbib`。
 - **无外部字体依赖**:仅使用标准 TeX Live 字体,保证 GitHub 与 arXiv
   提交的可移植性。
-- **一键转换**:使用 `make arxiv` 生成 [arXiv 预印本](#arxiv-pre-print);
+- **一键转换**:使用 `make-arxiv` 技能生成 [arXiv 预印本](#arxiv-pre-print);
   使用 `convert-template` 技能转换为 [会议/期刊模板](#venue-template)。
 
 <a id="requirements"></a>
@@ -335,7 +335,29 @@ Your paper starts here.
 
 ## arXiv 预印本
 
-编辑完成后运行 `make arxiv`,即可生成扁平化、可直接投稿的论文副本:
+编辑完成后运行 `make arxiv`,即可生成扁平化、可直接投稿的论文副本。
+`make-arxiv` 技能(同时为 Claude Code、Codex、Cursor 及其他智能体提供,
+分别位于 `.claude/skills/make-arxiv/`、`.codex/skills/make-arxiv/`、
+`.cursor/skills/make-arxiv/` 和 `.agents/skills/make-arxiv/`)对该流程做了
+自动化封装,包含前置条件检查以及独立编译验证:
+
+1. 按常规方式编辑 `main/` 下的论文,然后让你的智能体打包论文,例如:
+   > 将这篇论文打包为 arXiv 投稿。
+
+   或者
+
+   > 运行 make arxiv 并确认输出能够编译通过。
+2. 智能体会确认 `latexpand` 和 `perl` 已在 `PATH` 中,运行
+   `make arxiv`,并核对生成的 `arXiv/MANIFEST.txt` 与实际输出是否一致。
+3. 接着它会在 `arXiv/` 目录内(而非 `main/`)独立编译 `arXiv/main.tex`,
+   确认扁平化后的副本不依赖 `arXiv/` 之外的任何文件,然后反馈结果——
+   通过、失败(附带错误信息),或者在当前环境没有 TeX 工具链时提示
+   "未验证"。
+4. 根据反馈修复 `main/` 下的问题——切勿直接修改 `arXiv/`,因为它每次都
+   会被完全重新生成——然后让智能体重新运行。
+5. 提交 `arXiv/` 的全部内容;入口文件为 `arXiv/main.tex`。
+
+你也可以不借助智能体,自己直接运行 `make arxiv`:
 
 - 该命令会在 `main/` 中执行 `latexpand main.tex > ../arXiv/main.tex`,
   然后将本地类文件、参考文献和图片素材一并填充到 `arXiv/` 中。投稿时

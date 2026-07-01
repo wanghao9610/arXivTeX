@@ -32,7 +32,7 @@ live in their own files under `main/`.
 - **Paper Helpers**: `\parahead`, `\headbf`, `\tablestyle`, `\cmark`,
   `\xmark`, compact table columns, `cleveref`, and `natbib`.
 - **Portable Fonts**: Standard TeX Live fonts only, no external assets.
-- **Effortless Conversion**: `make arxiv` for an [arXiv Pre-print](#arxiv-pre-print); the `convert-template` skill for
+- **Effortless Conversion**: the `make-arxiv` skill for an [arXiv Pre-print](#arxiv-pre-print); the `convert-template` skill for
   [Venue Templates](#venue-template).
 
 ## Requirements
@@ -329,7 +329,31 @@ want the example PDF to include the appendix pages.
 ## arXiv Pre-print
 
 Run `make arxiv` after editing to produce a flattened, submission-ready copy
-of the paper:
+of the paper. A `make-arxiv` skill (bundled for Claude Code, Codex, Cursor,
+and other agents under `.claude/skills/make-arxiv/`,
+`.codex/skills/make-arxiv/`, `.cursor/skills/make-arxiv/`, and
+`.agents/skills/make-arxiv/`) automates this with prerequisite checks and a
+standalone-compile verification pass:
+
+1. Edit the paper under `main/` as usual, then ask your agent to package it,
+   for example:
+   > Package this paper for an arXiv submission.
+
+   or
+
+   > Run make arxiv and confirm the output compiles.
+2. The agent confirms `latexpand` and `perl` are on `PATH`, runs
+   `make arxiv`, and checks the generated `arXiv/MANIFEST.txt` against the
+   actual output.
+3. It compiles `arXiv/main.tex` standalone (inside `arXiv/`, not `main/`) to
+   confirm the flattened copy has no hidden dependency on files outside
+   `arXiv/`, then reports back — pass, fail with the error, or "not
+   verified" if no TeX toolchain is available in the environment.
+4. Fix any reported gaps under `main/` — never inside `arXiv/`, which is
+   fully regenerated on every run — and ask the agent to re-run.
+5. Submit the contents of `arXiv/`; the entry point is `arXiv/main.tex`.
+
+You can also skip the agent and run `make arxiv` yourself:
 
 - The command runs `latexpand main.tex > ../arXiv/main.tex` from `main/`, then
   fills out the rest of `arXiv/` with the local class, bibliography, and
