@@ -16,12 +16,12 @@
 - [环境要求](#requirements)
 - [项目结构](#project-organization)
 - [可选主题](#selectable-themes)
-- [类文件 API](#class-api)
 - [快速开始](#quick-start)
-- [最小示例](#minimal-example)
-- [添加内容](#adding-content)
 - [arXiv 预印本](#arxiv-pre-print)
 - [会议/期刊模板](#venue-template)
+- [类文件 API](#class-api)
+- [最小示例](#minimal-example)
+- [添加内容](#adding-content)
 - [许可证](#license)
 
 <a id="features"></a>
@@ -159,6 +159,118 @@
 | --- | --- | --- |
 | ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
 
+<a id="quick-start"></a>
+
+## 快速开始
+
+编译示例论文:
+
+```bash
+make
+```
+
+默认构建目标会将生成的文件写入 `.temp/`,包括 `.temp/main.pdf`。可通过
+覆盖 `MAIN_DIR`、`MAIN` 或 `OUT_DIR` 来指定不同的源码目录、入口文件或
+输出目录,例如 `OUT_DIR=build make`。
+
+也可以直接运行 LaTeX:
+
+```bash
+cd main && latexmk -pdf -outdir=../.temp main.tex
+```
+
+生成扁平化的 arXiv 投稿包:
+
+```bash
+make arxiv
+```
+
+该命令会将扁平化后的入口文件直接写入 `arXiv/main.tex`。
+
+<a id="arxiv-pre-print"></a>
+
+## arXiv 预印本
+
+编辑完成后运行 `make arxiv`,即可生成扁平化、可直接投稿的论文副本。
+`make-arxiv` 技能(同时为 Claude Code、Codex、Cursor 及其他智能体提供,
+分别位于 `.claude/skills/make-arxiv/`、`.codex/skills/make-arxiv/`、
+`.cursor/skills/make-arxiv/` 和 `.agents/skills/make-arxiv/`)对该流程做了
+自动化封装,包含前置条件检查以及独立编译验证:
+
+1. 按常规方式编辑 `main/` 下的论文,然后让你的智能体打包论文,例如:
+   > 将这篇论文打包为 arXiv 投稿。
+
+   或者
+
+   > 运行 make arxiv 并确认输出能够编译通过。
+2. 智能体会确认 `latexpand` 和 `perl` 已在 `PATH` 中,运行
+   `make arxiv`,并核对生成的 `arXiv/MANIFEST.txt` 与实际输出是否一致。
+3. 接着它会在 `arXiv/` 目录内(而非 `main/`)独立编译 `arXiv/main.tex`,
+   确认扁平化后的副本不依赖 `arXiv/` 之外的任何文件,然后反馈结果——
+   通过、失败(附带错误信息),或者在当前环境没有 TeX 工具链时提示
+   "未验证"。
+4. 根据反馈修复 `main/` 下的问题——切勿直接修改 `arXiv/`,因为它每次都
+   会被完全重新生成——然后让智能体重新运行。
+5. 提交 `arXiv/` 的全部内容;入口文件为 `arXiv/main.tex`。
+
+你也可以不借助智能体,自己直接运行 `make arxiv`:
+
+- 该命令会在 `main/` 中执行 `latexpand main.tex > ../arXiv/main.tex`,
+  然后将本地类文件、参考文献和图片素材一并填充到 `arXiv/` 中。投稿时
+  提交 `arXiv/` 的全部内容——入口文件为 `arXiv/main.tex`。
+- 它会复制 `main/*.cls`、`main/*.sty`、`main/*.bst`、`main/*.bib`、
+  `main/*.bbx` 和 `main/*.cbx` 文件,将 `main/figs/srcs/` 中的源码树
+  素材复制到 `arXiv/srcs/` 并相应地重写扁平化后 `arXiv/main.tex` 中的
+  路径;当存在 `main/srcs/` 时也会一并复制,以支持更扁平的源码树结构。
+
+需要注意以下几点:
+
+- 将项目专属的宏保留在 `main/main.tex` 中,而不是 `main/main.cls` 中。
+- 优先使用 PDF、PNG 或 JPG 格式的图片,避免使用绝对路径。
+- 不要提交 `.temp/`、编辑器设置、SyncTeX 文件、日志或本地预览 PDF。
+- 如果 arXiv 报告缺少某个宏包,请在投稿前将该功能从类文件移到论文源码
+  中,或直接移除该功能。
+
+进阶用法——覆盖入口文件或输出目录:
+
+```bash
+MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
+```
+
+<a id="venue-template"></a>
+
+## 会议/期刊模板
+
+`convert-template` 技能(同时为 Claude Code 和 Codex 提供,分别位于
+`.claude/skills/convert-template/` 和 `.codex/skills/convert-template/`)
+可以将本论文转换为官方提供的会议/期刊 LaTeX 模板的投稿副本——例如
+CVPR、ICCV 或 NeurIPS。
+
+1. 获取目标会议的官方作者工具包(包含其 `.cls`/`.sty`/`.bst` 文件及
+   示例 `.tex` 文件的压缩包),并准备好本地文件。该技能本身不会获取或
+   猜测会议模板——始终需要你提供官方压缩包。
+2. 让你的智能体(在 Claude Code 或 Codex 中)转换论文,提供压缩包路径
+   以及所需的模式,例如:
+   > 将本论文转换为 `~/Downloads/cvpr2025.zip` 中的 CVPR 模板,
+   > 使用匿名评审模式。
+
+   或者
+
+   > 现在为同一个 CVPR 模板生成正式发表(camera-ready)版本。
+3. 智能体会将工具包解压到 `templates/<venue>/`,然后在
+   `submit/<venue>/` 下生成一份独立、可编译的副本——其中包含一个
+   `compat.sty` 兼容层,使本模板的辅助命令(`\parahead`、`\figref`、
+   `\tablestyle`、紧凑型列类型等)在会议自身的类文件下继续可用,并生成
+   一个使用会议原生标题/作者宏、内容来自本论文元信息的新 `main.tex`。
+4. 盲审草稿选择 `anonymous`(匿名)模式(作者姓名、单位以及
+   代码/项目/数据集链接会被隐去);最终投稿选择 `camera-ready`
+   (正式发表)模式,包含完整的作者元信息。
+
+整个过程中 `main/` 和 `main/main.bib` 都不会被修改,其复制进来的官方
+会议文件同样不会被修改。`templates/` 和 `submit/` 已加入 `.gitignore`,
+因为会议工具包通常受版权保护,且 `submit/<venue>/` 每次都会从 `main/`
+完全重新生成——在 `main/` 下修改论文后,重新运行该技能即可刷新投稿副本。
+
 <a id="class-api"></a>
 
 ## 类文件 API
@@ -194,34 +306,6 @@
 | `\tablestyle{4pt}{1.1}` | 设置表格列间距与行距。 |
 | `\cmark`、`\xmark` | 用于对比表格的对勾与叉号符号。 |
 | `x`、`y`、`z`、`P`、`Y` 列类型 | 紧凑型表格列辅助类型。 |
-
-<a id="quick-start"></a>
-
-## 快速开始
-
-编译示例论文:
-
-```bash
-make
-```
-
-默认构建目标会将生成的文件写入 `.temp/`,包括 `.temp/main.pdf`。可通过
-覆盖 `MAIN_DIR`、`MAIN` 或 `OUT_DIR` 来指定不同的源码目录、入口文件或
-输出目录,例如 `OUT_DIR=build make`。
-
-也可以直接运行 LaTeX:
-
-```bash
-cd main && latexmk -pdf -outdir=../.temp main.tex
-```
-
-生成扁平化的 arXiv 投稿包:
-
-```bash
-make arxiv
-```
-
-该命令会将扁平化后的入口文件直接写入 `arXiv/main.tex`。
 
 <a id="minimal-example"></a>
 
@@ -330,90 +414,6 @@ Your paper starts here.
 
 若仅撰写正文而不需要附录,可注释掉这一行;若希望示例 PDF 包含附录页面,
 则保持启用状态。
-
-<a id="arxiv-pre-print"></a>
-
-## arXiv 预印本
-
-编辑完成后运行 `make arxiv`,即可生成扁平化、可直接投稿的论文副本。
-`make-arxiv` 技能(同时为 Claude Code、Codex、Cursor 及其他智能体提供,
-分别位于 `.claude/skills/make-arxiv/`、`.codex/skills/make-arxiv/`、
-`.cursor/skills/make-arxiv/` 和 `.agents/skills/make-arxiv/`)对该流程做了
-自动化封装,包含前置条件检查以及独立编译验证:
-
-1. 按常规方式编辑 `main/` 下的论文,然后让你的智能体打包论文,例如:
-   > 将这篇论文打包为 arXiv 投稿。
-
-   或者
-
-   > 运行 make arxiv 并确认输出能够编译通过。
-2. 智能体会确认 `latexpand` 和 `perl` 已在 `PATH` 中,运行
-   `make arxiv`,并核对生成的 `arXiv/MANIFEST.txt` 与实际输出是否一致。
-3. 接着它会在 `arXiv/` 目录内(而非 `main/`)独立编译 `arXiv/main.tex`,
-   确认扁平化后的副本不依赖 `arXiv/` 之外的任何文件,然后反馈结果——
-   通过、失败(附带错误信息),或者在当前环境没有 TeX 工具链时提示
-   "未验证"。
-4. 根据反馈修复 `main/` 下的问题——切勿直接修改 `arXiv/`,因为它每次都
-   会被完全重新生成——然后让智能体重新运行。
-5. 提交 `arXiv/` 的全部内容;入口文件为 `arXiv/main.tex`。
-
-你也可以不借助智能体,自己直接运行 `make arxiv`:
-
-- 该命令会在 `main/` 中执行 `latexpand main.tex > ../arXiv/main.tex`,
-  然后将本地类文件、参考文献和图片素材一并填充到 `arXiv/` 中。投稿时
-  提交 `arXiv/` 的全部内容——入口文件为 `arXiv/main.tex`。
-- 它会复制 `main/*.cls`、`main/*.sty`、`main/*.bst`、`main/*.bib`、
-  `main/*.bbx` 和 `main/*.cbx` 文件,将 `main/figs/srcs/` 中的源码树
-  素材复制到 `arXiv/srcs/` 并相应地重写扁平化后 `arXiv/main.tex` 中的
-  路径;当存在 `main/srcs/` 时也会一并复制,以支持更扁平的源码树结构。
-
-需要注意以下几点:
-
-- 将项目专属的宏保留在 `main/main.tex` 中,而不是 `main/main.cls` 中。
-- 优先使用 PDF、PNG 或 JPG 格式的图片,避免使用绝对路径。
-- 不要提交 `.temp/`、编辑器设置、SyncTeX 文件、日志或本地预览 PDF。
-- 如果 arXiv 报告缺少某个宏包,请在投稿前将该功能从类文件移到论文源码
-  中,或直接移除该功能。
-
-进阶用法——覆盖入口文件或输出目录:
-
-```bash
-MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
-```
-
-<a id="venue-template"></a>
-
-## 会议/期刊模板
-
-`convert-template` 技能(同时为 Claude Code 和 Codex 提供,分别位于
-`.claude/skills/convert-template/` 和 `.codex/skills/convert-template/`)
-可以将本论文转换为官方提供的会议/期刊 LaTeX 模板的投稿副本——例如
-CVPR、ICCV 或 NeurIPS。
-
-1. 获取目标会议的官方作者工具包(包含其 `.cls`/`.sty`/`.bst` 文件及
-   示例 `.tex` 文件的压缩包),并准备好本地文件。该技能本身不会获取或
-   猜测会议模板——始终需要你提供官方压缩包。
-2. 让你的智能体(在 Claude Code 或 Codex 中)转换论文,提供压缩包路径
-   以及所需的模式,例如:
-   > 将本论文转换为 `~/Downloads/cvpr2025.zip` 中的 CVPR 模板,
-   > 使用匿名评审模式。
-
-   或者
-
-   > 现在为同一个 CVPR 模板生成正式发表(camera-ready)版本。
-3. 智能体会将工具包解压到 `templates/<venue>/`,然后在
-   `submit/<venue>/` 下生成一份独立、可编译的副本——其中包含一个
-   `compat.sty` 兼容层,使本模板的辅助命令(`\parahead`、`\figref`、
-   `\tablestyle`、紧凑型列类型等)在会议自身的类文件下继续可用,并生成
-   一个使用会议原生标题/作者宏、内容来自本论文元信息的新 `main.tex`。
-4. 盲审草稿选择 `anonymous`(匿名)模式(作者姓名、单位以及
-   代码/项目/数据集链接会被隐去);最终投稿选择 `camera-ready`
-   (正式发表)模式,包含完整的作者元信息。
-
-整个过程中 `main/` 和 `main/main.bib` 都不会被修改,其复制进来的官方
-会议文件同样不会被修改。`templates/` 和 `submit/` 已加入 `.gitignore`,
-因为会议工具包通常受版权保护,且 `submit/<venue>/` 每次都会从 `main/`
-完全重新生成——在 `main/` 下修改论文后,重新运行该技能即可刷新投稿副本。
 
 <a id="license"></a>
 

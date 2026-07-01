@@ -15,12 +15,12 @@ live in their own files under `main/`.
 - [Requirements](#requirements)
 - [Project Organization](#project-organization)
 - [Selectable Themes](#selectable-themes)
-- [Class API](#class-api)
 - [Quick Start](#quick-start)
-- [Minimal Example](#minimal-example)
-- [Adding Content](#adding-content)
 - [arXiv Pre-Print](#arxiv-pre-print)
 - [Venue Template](#venue-template)
+- [Class API](#class-api)
+- [Minimal Example](#minimal-example)
+- [Adding Content](#adding-content)
 - [License](#license)
 
 ## Key Features
@@ -148,7 +148,7 @@ Keep wrapper and asset basenames aligned (for example,
 The same two-digit prefix scheme applies to `main/secs/`, `main/figs/`,
 `main/figs/srcs/`, `main/tabs/`, and `main/algs/`.
 
-## Themes
+## Selectable Themes
 
 Set `\papertheme{...}` to `green`, `blue`, or `black`. Below is the first page
 of the example paper rendered with each theme.
@@ -156,6 +156,123 @@ of the example paper rendered with each theme.
 | `green` | `blue` | `black` |
 | --- | --- | --- |
 | ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
+
+## Quick Start
+
+Compile the example:
+
+```bash
+make
+```
+
+The default build target writes generated files to `.temp/`, including
+`.temp/main.pdf`. Override `MAIN_DIR`, `MAIN`, or `OUT_DIR` to point at a
+different source tree, entry file, or output directory, for example
+`OUT_DIR=build make`.
+
+Alternatively, run LaTeX directly:
+
+```bash
+cd main && latexmk -pdf -outdir=../.temp main.tex
+```
+
+Prepare a flattened arXiv source bundle:
+
+```bash
+make arxiv
+```
+
+This writes the flattened upload entry file directly to `arXiv/main.tex`.
+
+## arXiv Pre-print
+
+Run `make arxiv` after editing to produce a flattened, submission-ready copy
+of the paper. A `make-arxiv` skill (bundled for Claude Code, Codex, Cursor,
+and other agents under `.claude/skills/make-arxiv/`,
+`.codex/skills/make-arxiv/`, `.cursor/skills/make-arxiv/`, and
+`.agents/skills/make-arxiv/`) automates this with prerequisite checks and a
+standalone-compile verification pass:
+
+1. Edit the paper under `main/` as usual, then ask your agent to package it,
+   for example:
+   > Package this paper for an arXiv submission.
+
+   or
+
+   > Run make arxiv and confirm the output compiles.
+2. The agent confirms `latexpand` and `perl` are on `PATH`, runs
+   `make arxiv`, and checks the generated `arXiv/MANIFEST.txt` against the
+   actual output.
+3. It compiles `arXiv/main.tex` standalone (inside `arXiv/`, not `main/`) to
+   confirm the flattened copy has no hidden dependency on files outside
+   `arXiv/`, then reports back — pass, fail with the error, or "not
+   verified" if no TeX toolchain is available in the environment.
+4. Fix any reported gaps under `main/` — never inside `arXiv/`, which is
+   fully regenerated on every run — and ask the agent to re-run.
+5. Submit the contents of `arXiv/`; the entry point is `arXiv/main.tex`.
+
+You can also skip the agent and run `make arxiv` yourself:
+
+- The command runs `latexpand main.tex > ../arXiv/main.tex` from `main/`, then
+  fills out the rest of `arXiv/` with the local class, bibliography, and
+  figure assets. Submit the contents of `arXiv/` — the package entry point is
+  `arXiv/main.tex`.
+- It copies `main/*.cls`, `main/*.sty`, `main/*.bst`, `main/*.bib`,
+  `main/*.bbx`, and `main/*.cbx` files, copies source-tree assets from
+  `main/figs/srcs/` into `arXiv/srcs/` and rewrites the flattened
+  `arXiv/main.tex` paths accordingly, and also copies `main/srcs/` when
+  present to support flatter source-tree layouts.
+
+A few things to keep in mind:
+
+- Keep project-specific macros in `main/main.tex`, not in `main/main.cls`.
+- Prefer PDF, PNG, or JPG figures and avoid absolute file paths.
+- Do not submit `.temp/`, editor settings, SyncTeX files, logs, or local
+  preview PDFs.
+- If arXiv reports a missing package, move that feature from the class into
+  the paper source or remove it before submission.
+
+Advanced usage — override the entry point or output directory:
+
+```bash
+MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
+```
+
+## Venue Template
+
+A `convert-template` skill (bundled for both Claude Code and Codex, under
+`.claude/skills/convert-template/` and `.codex/skills/convert-template/`)
+converts this paper into a submission copy for an officially-supplied venue
+LaTeX template — for example CVPR, ICCV, or NeurIPS.
+
+1. Get the official author kit for your target venue (a zip containing its
+   `.cls`/`.sty`/`.bst` files and a sample `.tex`) and have it ready locally.
+   The skill never fetches or guesses a venue template itself — you always
+   supply the official zip.
+2. Ask your agent (in Claude Code or Codex) to convert the paper, giving it
+   the zip's path and which mode you want, for example:
+   > Convert this paper to the CVPR template at `~/Downloads/cvpr2025.zip`,
+   > anonymous review mode.
+
+   or
+
+   > Now generate the camera-ready version for the same CVPR template.
+3. The agent unpacks the kit into `templates/<venue>/`, then generates a
+   standalone, compilable copy under `submit/<venue>/` — including a
+   `compat.sty` shim so this template's helpers (`\parahead`, `\figref`,
+   `\tablestyle`, the compact column types, etc.) keep working under the
+   venue's own class, and a new `main.tex` with the venue's native
+   title/author macros populated from this paper's metadata.
+4. Choose `anonymous` mode for a blind-review draft (author names,
+   affiliations, and code/project/dataset links are redacted) or
+   `camera-ready` mode for the final submission with full author metadata.
+
+`main/` and `main/main.bib` are never modified by this process, and neither
+are the official venue files it copies in. `templates/` and `submit/` are
+gitignored, since venue kits are usually copyrighted and `submit/<venue>/`
+is fully regenerated from `main/` each time you re-run the conversion — edit
+the paper under `main/`, then re-run the skill to refresh the submission
+copy.
 
 ## Class API
 
@@ -190,33 +307,6 @@ Use these commands in the paper body:
 | `\tablestyle{4pt}{1.1}` | Sets table column spacing and row stretch. |
 | `\cmark`, `\xmark` | Check and cross symbols for comparison tables. |
 | `x`, `y`, `z`, `P`, `Y` column types | Compact table column helpers. |
-
-## Quick Start
-
-Compile the example:
-
-```bash
-make
-```
-
-The default build target writes generated files to `.temp/`, including
-`.temp/main.pdf`. Override `MAIN_DIR`, `MAIN`, or `OUT_DIR` to point at a
-different source tree, entry file, or output directory, for example
-`OUT_DIR=build make`.
-
-Alternatively, run LaTeX directly:
-
-```bash
-cd main && latexmk -pdf -outdir=../.temp main.tex
-```
-
-Prepare a flattened arXiv source bundle:
-
-```bash
-make arxiv
-```
-
-This writes the flattened upload entry file directly to `arXiv/main.tex`.
 
 ## Minimal Example
 
@@ -325,96 +415,6 @@ range:
 
 Comment this line when drafting a main-body-only paper. Keep it enabled when you
 want the example PDF to include the appendix pages.
-
-## arXiv Pre-print
-
-Run `make arxiv` after editing to produce a flattened, submission-ready copy
-of the paper. A `make-arxiv` skill (bundled for Claude Code, Codex, Cursor,
-and other agents under `.claude/skills/make-arxiv/`,
-`.codex/skills/make-arxiv/`, `.cursor/skills/make-arxiv/`, and
-`.agents/skills/make-arxiv/`) automates this with prerequisite checks and a
-standalone-compile verification pass:
-
-1. Edit the paper under `main/` as usual, then ask your agent to package it,
-   for example:
-   > Package this paper for an arXiv submission.
-
-   or
-
-   > Run make arxiv and confirm the output compiles.
-2. The agent confirms `latexpand` and `perl` are on `PATH`, runs
-   `make arxiv`, and checks the generated `arXiv/MANIFEST.txt` against the
-   actual output.
-3. It compiles `arXiv/main.tex` standalone (inside `arXiv/`, not `main/`) to
-   confirm the flattened copy has no hidden dependency on files outside
-   `arXiv/`, then reports back — pass, fail with the error, or "not
-   verified" if no TeX toolchain is available in the environment.
-4. Fix any reported gaps under `main/` — never inside `arXiv/`, which is
-   fully regenerated on every run — and ask the agent to re-run.
-5. Submit the contents of `arXiv/`; the entry point is `arXiv/main.tex`.
-
-You can also skip the agent and run `make arxiv` yourself:
-
-- The command runs `latexpand main.tex > ../arXiv/main.tex` from `main/`, then
-  fills out the rest of `arXiv/` with the local class, bibliography, and
-  figure assets. Submit the contents of `arXiv/` — the package entry point is
-  `arXiv/main.tex`.
-- It copies `main/*.cls`, `main/*.sty`, `main/*.bst`, `main/*.bib`,
-  `main/*.bbx`, and `main/*.cbx` files, copies source-tree assets from
-  `main/figs/srcs/` into `arXiv/srcs/` and rewrites the flattened
-  `arXiv/main.tex` paths accordingly, and also copies `main/srcs/` when
-  present to support flatter source-tree layouts.
-
-A few things to keep in mind:
-
-- Keep project-specific macros in `main/main.tex`, not in `main/main.cls`.
-- Prefer PDF, PNG, or JPG figures and avoid absolute file paths.
-- Do not submit `.temp/`, editor settings, SyncTeX files, logs, or local
-  preview PDFs.
-- If arXiv reports a missing package, move that feature from the class into
-  the paper source or remove it before submission.
-
-Advanced usage — override the entry point or output directory:
-
-```bash
-MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
-```
-
-## Venue Template
-
-A `convert-template` skill (bundled for both Claude Code and Codex, under
-`.claude/skills/convert-template/` and `.codex/skills/convert-template/`)
-converts this paper into a submission copy for an officially-supplied venue
-LaTeX template — for example CVPR, ICCV, or NeurIPS.
-
-1. Get the official author kit for your target venue (a zip containing its
-   `.cls`/`.sty`/`.bst` files and a sample `.tex`) and have it ready locally.
-   The skill never fetches or guesses a venue template itself — you always
-   supply the official zip.
-2. Ask your agent (in Claude Code or Codex) to convert the paper, giving it
-   the zip's path and which mode you want, for example:
-   > Convert this paper to the CVPR template at `~/Downloads/cvpr2025.zip`,
-   > anonymous review mode.
-
-   or
-
-   > Now generate the camera-ready version for the same CVPR template.
-3. The agent unpacks the kit into `templates/<venue>/`, then generates a
-   standalone, compilable copy under `submit/<venue>/` — including a
-   `compat.sty` shim so this template's helpers (`\parahead`, `\figref`,
-   `\tablestyle`, the compact column types, etc.) keep working under the
-   venue's own class, and a new `main.tex` with the venue's native
-   title/author macros populated from this paper's metadata.
-4. Choose `anonymous` mode for a blind-review draft (author names,
-   affiliations, and code/project/dataset links are redacted) or
-   `camera-ready` mode for the final submission with full author metadata.
-
-`main/` and `main/main.bib` are never modified by this process, and neither
-are the official venue files it copies in. `templates/` and `submit/` are
-gitignored, since venue kits are usually copyrighted and `submit/<venue>/`
-is fully regenerated from `main/` each time you re-run the conversion — edit
-the paper under `main/`, then re-run the skill to refresh the submission
-copy.
 
 ## License
 
