@@ -1,0 +1,21 @@
+\section{Additional Results}
+\label{sec:app_additional_results}
+
+Use appendix sections for supporting material that is useful to readers but too
+long for the main paper. Common examples include extended comparisons, more
+ablation settings, qualitative examples, extra implementation details, and
+failure cases.
+
+\paperparagraph{Extended Tables}
+Long or secondary tables should live in \texttt{tabs/} and be included from the
+appendix section. \tabref{tab:app_extra_results} shows a compact example.
+
+\input{tabs/10_extra.tex}
+
+\paperparagraph{Additional Figures}
+Appendix figures follow the same wrapper-and-asset pattern as main-body figures:
+put the figure environment in \texttt{figs/} and store raw assets in
+\texttt{figs/srcs/}. \figref{fig:app_extra_figure} is a placeholder wrapper that
+can be replaced with a real analysis figure.
+
+\input{figs/10_figure.tex}

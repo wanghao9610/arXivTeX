@@ -1,0 +1,36 @@
+\documentclass[twocolumn]{main}
+
+\title{arXiv LaTeX Template for Research Projects}
+
+\author[1,2,\ast]{First Author}
+\author[1,\ast]{Second Author}
+\author[2,\dagger]{Corresponding Author}
+
+\affiliation[1]{Affiliation 1}
+\affiliation[2]{Affiliation 2}
+\contribution[\ast]{Equal contribution}
+\contribution[\dagger]{Corresponding author}
+
+\input{secs/00_abstract.tex}
+
+\date{\today}
+\code{https://github.com/your-name/your-project}
+\project{https://your-name.github.io/your-project}
+\correspondence{\email{first.author@example.com}}
+
+\newcommand{\method}{MethodName\xspace}
+
+\begin{document}
+\maketitle
+
+\input{secs/01_introduction.tex}
+\input{secs/02_method.tex}
+\input{secs/03_experiments.tex}
+\input{secs/09_conclusion.tex}
+
+\input{appx.tex}
+
+\bibliographystyle{unsrtnat}
+\bibliography{main}
+
+\end{document}
