@@ -1,6 +1,6 @@
 # arXiv TeX Template
 
-[![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fwanghao9610%2FarXivTeX%2Farchive%2Frefs%2Fheads%2Fmain.zip)
+[![Open in Overleaf](https://img.shields.io/badge/Open%20in-Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/docs?snip_uri=https%3A%2F%2Fgithub.com%2Fwanghao9610%2FarXivTeX%2Farchive%2Frefs%2Fheads%2Foverleaf.zip)
 
 **Language:** English | [简体中文](README.zh-CN.md)
 
