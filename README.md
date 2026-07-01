@@ -248,6 +248,15 @@ range:
 Comment this line when drafting a main-body-only paper. Keep it enabled when you
 want the example PDF to include the appendix pages.
 
+## Themes
+
+Set `\papertheme{...}` to `green`, `blue`, or `black`. Below is the first page
+of the example paper rendered with each theme.
+
+| `green` | `blue` | `black` |
+| --- | --- | --- |
+| ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
+
 ## Class API
 
 Use these commands before `\begin{document}`:
