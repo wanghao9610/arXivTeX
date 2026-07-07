@@ -15,6 +15,7 @@
 - [主要特性](#features)
 - [环境要求](#requirements)
 - [项目结构](#project-organization)
+- [论文样式](#paper-styles)
 - [可选主题](#selectable-themes)
 - [快速开始](#quick-start)
 - [arXiv 预印本](#arxiv-pre-print)
@@ -148,18 +149,25 @@
 `main/secs/`、`main/figs/`、`main/figs/srcs/`、`main/tabs/` 和
 `main/algs/` 都遵循相同的两位数字前缀方案。
 
+<a id="paper-styles"></a>
+
+## 论文样式
+
+通过 `\paperstyle{...}` 选择标题面板样式,并结合 `\papercolor{...}`
+选择配色。下面展示示例论文首页在当前所有样式与配色组合下的效果。
+
+| 样式 | `green` | `blue` | `black` |
+| --- | --- | --- | --- |
+| `fancy` | ![fancy green](docs/imgs/fancy-green.png) | ![fancy blue](docs/imgs/fancy-blue.png) | ![fancy black](docs/imgs/fancy-black.png) |
+| `simple` | ![simple green](docs/imgs/simple-green.png) | ![simple blue](docs/imgs/simple-blue.png) | ![simple black](docs/imgs/simple-black.png) |
+
 <a id="selectable-themes"></a>
 
 ## 可选主题
 
 通过 `\paperstyle{...}` 设置为 `fancy` 或 `simple`, 通过
 `\papercolor{...}` 设置为 `green`、`blue` 或 `black`。旧的
-`\papertheme{...}` 仍作为 `\papercolor{...}` 的别名保留。下面展示了
-示例论文首页在默认 `fancy` 样式下三种颜色的效果。
-
-| `green` | `blue` | `black` |
-| --- | --- | --- |
-| ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
+`\papertheme{...}` 仍作为 `\papercolor{...}` 的别名保留。
 
 <a id="quick-start"></a>
 

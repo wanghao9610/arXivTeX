@@ -152,23 +152,20 @@ The same two-digit prefix scheme applies to `main/secs/`, `main/figs/`,
 ## Paper Styles
 
 Set `\paperstyle{...}` before `\begin{document}` to choose the title panel
-layout. The template currently provides `fancy` and `simple`; below is the
-first page of the example paper rendered with each style.
+layout. Combine it with `\papercolor{...}` to choose the color palette. The
+gallery below shows the first page of the example paper rendered with every
+current style and color combination.
 
-| `fancy` | `simple` |
-| --- | --- |
-| ![fancy style](docs/img/style-fancy.png) | ![simple style](docs/img/style-simple.png) |
+| Style | `green` | `blue` | `black` |
+| --- | --- | --- | --- |
+| `fancy` | ![fancy green](docs/imgs/fancy-green.png) | ![fancy blue](docs/imgs/fancy-blue.png) | ![fancy black](docs/imgs/fancy-black.png) |
+| `simple` | ![simple green](docs/imgs/simple-green.png) | ![simple blue](docs/imgs/simple-blue.png) | ![simple black](docs/imgs/simple-black.png) |
 
 ## Selectable Themes
 
 Set `\paperstyle{...}` to `fancy` or `simple`, and set `\papercolor{...}` to
 `green`, `blue`, or `black`. The legacy `\papertheme{...}` command remains as an
-alias for `\papercolor{...}`. Below is the first page of the example paper
-rendered with each color in the default `fancy` style.
-
-| `green` | `blue` | `black` |
-| --- | --- | --- |
-| ![green theme](docs/img/theme-green.png) | ![blue theme](docs/img/theme-blue.png) | ![black theme](docs/img/theme-black.png) |
+alias for `\papercolor{...}`.
 
 ## Quick Start
 

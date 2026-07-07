@@ -6,18 +6,18 @@
 
 % Page and typography
 \RequirePackage[top=2.25cm,bottom=2.75cm,left=2.5cm,right=2.5cm,columnsep=0.7cm]{geometry}
-\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
 \RequirePackage{textcomp}
 \RequirePackage{lmodern}
-\RequirePackage[scaled=0.95]{helvet}
 \RequirePackage{microtype}
 \RequirePackage{placeins}
 \RequirePackage{hyphenat}
 \RequirePackage{setspace}
 \RequirePackage{parskip}
-\RequirePackage[english]{babel}
 \RequirePackage{etoolbox}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage[english]{babel}
 
 \renewcommand*\ttdefault{cmvtt}
 \renewcommand*\sfdefault{phv}
@@ -206,6 +206,7 @@
   font=small,
   skip=6pt
 }
+\DeclareTextFontCommand{\textbf}{\bfseries\sffamily}
 % Small helpers copied out of the paper body into the template layer.
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
@@ -241,14 +242,17 @@
 \newcommand{\sa@metadatasep}{\par\vspace{0.15em}}
 \newcommand{\sa@paperstyle}{fancy}
 \newcommand{\sa@authorsep}{,\hspace{0.25em}}
-\newcommand{\sa@affiliationsep}{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace}
+\newcommand{\sa@affiliationsep}{\hspace{0.15em}\textcolor{titlefg}{\textperiodcentered}\hspace{0.15em}}
 \newcommand{\sa@contributionsep}{,\enspace}
 \newlength{\sa@keywordsTopSkip}
 \setlength{\sa@keywordsTopSkip}{0.22cm}
+\newsavebox{\sa@titlebox}
+\newsavebox{\sa@abstractbox}
 
 \newcommand{\sa@sups}[1]{\ifblank{#1}{}{\textsuperscript{\ensuremath{#1}}}}
+\newcommand{\sa@authorfont}{\normalsize\sffamily\bfseries\color{titlefg}}
 \newcommand{\sa@authorformat}[2][]{%
-  {\sffamily\bfseries\color{titlefg}#2\sa@sups{#1}}%
+  {\sa@authorfont#2\sa@sups{#1}}%
 }
 \newcommand{\sa@affiliationformat}[2][]{%
   {\small\color{titlefg}\sa@sups{#1}#2}%
@@ -306,26 +310,26 @@
 
 \newcommand{\sa@titleblock@typography}{%
   \renewcommand{\sa@authorformat}[2][]{%
-    {\sffamily\bfseries\color{titlefg}##2\sa@sups{##1}}%
+    {\sa@authorfont##2\sa@sups{##1}}%
   }%
   \renewcommand{\sa@affiliationformat}[2][]{%
-    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}##2}%
+    {\small\rmfamily\color{titlefg}\sa@sups{##1}##2}%
   }%
   \renewcommand{\sa@contributionformat}[2][]{%
-    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}\textit{##2}}%
+    {\small\rmfamily\color{titlefg}\sa@sups{##1}\textit{##2}}%
   }%
   \renewcommand{\sa@metadataformat}[2][]{%
-    {\normalsize\sffamily\color{titlefg}\ifblank{##1}{}{\textbf{##1}\enspace}##2}%
+    {\small\color{titlefg}\ifblank{##1}{}{{\sffamily\bfseries ##1}\enspace}##2}%
   }%
   \renewcommand{\sa@authorsep}{,\hspace{0.25em}}%
-  \renewcommand{\sa@affiliationsep}{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace}%
+  \renewcommand{\sa@affiliationsep}{\hspace{0.15em}\textcolor{titlefg}{\textperiodcentered}\hspace{0.15em}}%
   \renewcommand{\sa@contributionsep}{,\enspace}%
   \renewcommand{\sa@metadatasep}{\par\vspace{0.10em}}%
 }
 
 \newcommand{\sa@simple@titleblock@typography}{%
   \renewcommand{\sa@authorformat}[2][]{%
-    {\sffamily\bfseries\color{titlefg}##2{\normalfont\sa@sups{##1}}}%
+    {\sa@authorfont##2\sa@sups{##1}}%
   }%
   \renewcommand{\sa@affiliationformat}[2][]{%
     {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}##2}%
@@ -336,7 +340,7 @@
   \renewcommand{\sa@metadataformat}[2][]{%
     {\normalsize\color{titlefg}\ifblank{##1}{}{{\sffamily\bfseries ##1}\enspace}{\normalfont\rmfamily ##2}}%
   }%
-  \renewcommand{\sa@authorsep}{,\hspace{0.32em}}%
+  \renewcommand{\sa@authorsep}{,\hspace{0.25em}}%
   \renewcommand{\sa@affiliationsep}{,\enspace}%
   \renewcommand{\sa@contributionsep}{,\enspace}%
   \renewcommand{\sa@metadatasep}{\par\vspace{0.10em}}%
@@ -349,6 +353,48 @@
 \newcommand{\sa@fancymetadivider}{%
   {\color{rulecolor!55}\rule{\linewidth}{0.45pt}}\par\vspace{-\parskip}%
 }
+\newlength{\sa@fancyAbstractDividerSkip}
+\setlength{\sa@fancyAbstractDividerSkip}{0.20cm}
+\newlength{\sa@fancyAbstractLowerDividerSkip}
+\setlength{\sa@fancyAbstractLowerDividerSkip}{-0.10cm}
+
+\newcommand{\sa@titlefont}{\huge\sffamily\bfseries\color{titlefg}}
+\newcommand{\sa@compacttitlefont}{\LARGE\sffamily\bfseries\color{titlefg}}
+\newlength{\sa@titleheightlimit}
+\newcommand{\sa@settitlebox}[1]{%
+  \setbox\sa@titlebox=\vbox{%
+    \hsize=\linewidth
+    \parindent=0pt
+    #1%
+    \global\sa@titleheightlimit=2.75\baselineskip
+    \raggedright
+    \nohyphens
+    \strut\sa@title\strut\par
+  }%
+}
+\newcommand{\sa@printtitle}{%
+  \begingroup
+    \sa@settitlebox{\sa@titlefont}%
+    \ifdim\dimexpr\ht\sa@titlebox+\dp\sa@titlebox\relax>\sa@titleheightlimit
+      \sa@settitlebox{\sa@compacttitlefont}%
+    \fi
+    \box\sa@titlebox
+  \endgroup
+}
+\newcommand{\sa@setabstractbox}{%
+  \setbox\sa@abstractbox=\vbox{%
+    \hsize=\linewidth
+    \parindent=0pt
+    \setstretch{1.08}%
+    \small\rmfamily\color{inkfg}\sa@abstract\par
+  }%
+}
+\newcommand{\sa@printabstract}{%
+  \begingroup
+    \sa@setabstractbox
+    \box\sa@abstractbox
+  \endgroup
+}
 
 \newcommand{\sa@maketitle@fancy}{%
   \begingroup
@@ -358,44 +404,54 @@
       colback=fancybg,
       colframe=titleframe,
       boxrule=0.45pt,
-      arc=8pt,
+      arc=10pt,
       boxsep=0pt,
       left=0.7cm,
       right=0.7cm,
-      top=0.26cm,
-      bottom=0.28cm,
+      top=0.45cm,
+      bottom=0.45cm,
       before skip=0pt,
       grow to left by=1pt,
       grow to right by=1pt,
       drop fuzzy shadow={black!10!white}
     ]
-      \raggedright
-      \nohyphens
-      {\setstretch{1.20}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
-      \vskip 0.14cm
-      {\setstretch{1.12}\large\sa@authorlist\par}
-      \ifdefempty{\sa@affiliationlist}{}{%
-        \vskip 0.08cm
-        {\sa@affiliationlist\par}
-      }
-      \ifdefempty{\sa@contributionlist}{}{%
-        \vskip 0.02cm
-        {\sa@contributionlist\par}
-      }
+      {%
+        \raggedright
+        \nohyphens
+        {\noindent\sa@printtitle\par}
+        \vskip 0.20cm
+        {\setstretch{1.0}\normalsize\sa@authorlist\par}
+        \ifdefempty{\sa@affiliationlist}{}{%
+          \vskip 0.20cm
+          {\sa@affiliationlist\par}
+        }
+        \ifdefempty{\sa@contributionlist}{}{%
+          \vskip 0.20cm
+          {\sa@contributionlist\par}
+        }
+      }%
       \ifdefempty{\sa@abstract}{}{%
-        \vskip 0.08cm
+        \vskip 0.10cm
         \sa@fancydivider
-        \vskip 0.08cm
-        {\setstretch{1.14}\large\rmfamily\color{inkfg}\sa@abstract\par}
+        \vskip\sa@fancyAbstractDividerSkip
+        \sa@printabstract
       }
       \ifdefempty{\sa@keywords}{}{%
-        \vskip 0.20cm
+        \vskip 0.10cm
         {\normalsize\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
       }
       \ifdefempty{\sa@metadatalist}{}{%
-        \vskip 0.03cm
+        \ifdefempty{\sa@abstract}{%
+          \vskip 0.10cm
+        }{%
+          \ifdefempty{\sa@keywords}{%
+            \vskip\sa@fancyAbstractLowerDividerSkip
+          }{%
+            \vskip 0.10cm
+          }%
+        }%
         \sa@fancymetadivider
-        \vskip 0.02cm
+        \vskip 0.10cm
         \begin{tcolorbox}[
           enhanced,
           frame hidden,
@@ -404,10 +460,10 @@
           boxsep=0pt,
           left=0.22cm,
           right=0.22cm,
-          top=0.06cm,
-          bottom=0.13cm
+          top=0.09cm,
+          bottom=0.09cm
         ]
-          {\setstretch{1.08}\sa@metadatalist\par}
+          {\setstretch{1.0}\sa@metadatalist\par}
         \end{tcolorbox}
       }
     \end{tcolorbox}
@@ -434,30 +490,32 @@
       grow to left by=1pt,
       grow to right by=1pt
     ]
-      \raggedright
-      \nohyphens
-      {\setstretch{1.20}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
-      \vskip 0.20cm
-      {\setstretch{1.12}\large\sa@authorlist\par}
-      \ifdefempty{\sa@affiliationlist}{}{%
-        \vskip 0.18cm
-        {\setstretch{1.05}\sa@affiliationlist\par}
-      }
-      \ifdefempty{\sa@contributionlist}{}{%
-        \vskip 0.04cm
-        {\setstretch{1.05}\sa@contributionlist\par}
-      }
+      {%
+        \raggedright
+        \nohyphens
+        {\noindent\sa@printtitle\par}
+        \vskip 0.20cm
+        {\setstretch{1.0}\normalsize\sa@authorlist\par}
+        \ifdefempty{\sa@affiliationlist}{}{%
+          \vskip 0.20cm
+          {\setstretch{1.0}\sa@affiliationlist\par}
+        }
+        \ifdefempty{\sa@contributionlist}{}{%
+          \vskip 0.20cm
+          {\setstretch{1.0}\sa@contributionlist\par}
+        }
+      }%
       \ifdefempty{\sa@abstract}{}{%
-        \vskip 0.45cm
-        {\setstretch{1.14}\large\rmfamily\color{inkfg}\sa@abstract\par}
+        \vskip 0.30cm
+        \sa@printabstract
       }
       \ifdefempty{\sa@keywords}{}{%
-        \vskip 0.25cm
+        \vskip 0.10cm
         {\normalsize\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
       }
       \ifdefempty{\sa@metadatalist}{}{%
-        \vskip 0.32cm
-        {\setstretch{1.08}\sa@metadatalist\par}
+        \vskip 0.30cm
+        {\setstretch{1.0}\sa@metadatalist\par}
       }
     \end{tcolorbox}
   \endgroup
