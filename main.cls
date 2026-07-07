@@ -59,13 +59,14 @@
 \definecolor{themegreen}{HTML}{006B4F}
 \definecolor{themeblue}{HTML}{0052C7}
 \definecolor{themedark}{HTML}{0F6B2A}
-\definecolor{paperbg}{HTML}{F0F7F4}
+\definecolor{fancybg}{HTML}{F0F7F4}
 \definecolor{inkfg}{HTML}{1A2E22}
 \definecolor{titlefg}{HTML}{1A2E22}
 \definecolor{rulecolor}{HTML}{006B4F}
 \definecolor{titleframe}{HTML}{BBD8CC}
 \definecolor{metabg}{HTML}{E7F2ED}
 \definecolor{metalink}{HTML}{006B4F}
+\definecolor{simplebg}{HTML}{F3F6F4}
 \definecolor{LightYellow}{HTML}{FEFBE8}
 \definecolor{LightGreen}{HTML}{EAF6EE}
 \definecolor{LightRed}{HTML}{FDECEA}
@@ -88,48 +89,52 @@
 \newcommand{\sa@theme@green}{%
   \definecolor{themegreen}{HTML}{006B4F}%
   \definecolor{themedark}{HTML}{0F6B2A}%
-  \definecolor{paperbg}{HTML}{F0F7F4}%
+  \definecolor{fancybg}{HTML}{F0F7F4}%
   \definecolor{inkfg}{HTML}{1A2E22}%
   \definecolor{titlefg}{HTML}{1A2E22}%
   \definecolor{rulecolor}{HTML}{006B4F}%
   \definecolor{titleframe}{HTML}{BBD8CC}%
   \definecolor{metabg}{HTML}{E7F2ED}%
   \definecolor{metalink}{HTML}{006B4F}%
+  \definecolor{simplebg}{HTML}{F3F6F4}%
   \colorlet{accentcolor}{themegreen}%
   \sa@sync@linkcolors
 }
 \newcommand{\sa@theme@blue}{%
   \definecolor{themedark}{HTML}{004BB5}%
-  \definecolor{paperbg}{HTML}{F1F7FE}%
+  \definecolor{fancybg}{HTML}{F1F7FE}%
   \definecolor{inkfg}{HTML}{172B3A}%
   \definecolor{titlefg}{HTML}{172B3A}%
   \definecolor{rulecolor}{HTML}{0052C7}%
   \definecolor{titleframe}{HTML}{BFD8F5}%
   \definecolor{metabg}{HTML}{E7F1FD}%
   \definecolor{metalink}{HTML}{0052C7}%
+  \definecolor{simplebg}{HTML}{F3F7FC}%
   \colorlet{accentcolor}{themeblue}%
   \sa@sync@linkcolors
 }
 \newcommand{\sa@theme@black}{%
   \definecolor{themedark}{HTML}{111111}%
-  \definecolor{paperbg}{HTML}{FFFFFF}%
+  \definecolor{fancybg}{HTML}{FFFFFF}%
   \definecolor{inkfg}{HTML}{111111}%
   \definecolor{titlefg}{HTML}{111111}%
   \definecolor{rulecolor}{HTML}{111111}%
   \definecolor{metabg}{HTML}{F3F4F6}%
   \definecolor{metalink}{HTML}{111111}%
+  \definecolor{simplebg}{HTML}{F1F2F4}%
   \colorlet{accentcolor}{black}%
   \colorlet{titleframe}{black!22}%
   \sa@sync@linkcolors
 }
-\newcommand{\papertheme}[1]{%
+\newcommand{\papercolor}[1]{%
   \@ifundefined{sa@theme@#1}{%
-    \PackageError{main}{Unknown paper theme `#1'}{Available themes are green, blue, and black.}%
+    \PackageError{main}{Unknown paper color `#1'}{Available colors are green, blue, and black.}%
   }{%
     \csname sa@theme@#1\endcsname
   }%
 }
-\papertheme{green}
+\newcommand{\papertheme}[1]{\papercolor{#1}}
+\papercolor{green}
 \makeatother
 
 % Links and bibliography
@@ -234,6 +239,10 @@
 \newcommand{\sa@keywords}{}
 \newcommand{\sa@metadatalist}{}
 \newcommand{\sa@metadatasep}{\par\vspace{0.15em}}
+\newcommand{\sa@paperstyle}{fancy}
+\newcommand{\sa@authorsep}{,\hspace{0.25em}}
+\newcommand{\sa@affiliationsep}{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace}
+\newcommand{\sa@contributionsep}{,\enspace}
 \newlength{\sa@keywordsTopSkip}
 \setlength{\sa@keywordsTopSkip}{0.22cm}
 
@@ -242,10 +251,10 @@
   {\sffamily\bfseries\color{titlefg}#2\sa@sups{#1}}%
 }
 \newcommand{\sa@affiliationformat}[2][]{%
-  {\small\color{titlefg}\sa@sups{#1}\ifblank{#1}{}{\ }#2}%
+  {\small\color{titlefg}\sa@sups{#1}#2}%
 }
 \newcommand{\sa@contributionformat}[2][]{%
-  {\small\color{titlefg}\sa@sups{#1}\ifblank{#1}{}{\ }\textit{#2}}%
+  {\small\color{titlefg}\sa@sups{#1}\textit{#2}}%
 }
 \newcommand{\sa@metadataformat}[2][]{%
   {\small\sffamily\color{titlefg}\ifblank{#1}{}{\textbf{#1}\enspace}#2}%
@@ -255,17 +264,17 @@
 \renewcommand{\author}[2][]{%
   \ifdefempty{\sa@authorlist}
     {\gdef\sa@authorlist{\sa@authorformat[#1]{#2}}}
-    {\gappto\sa@authorlist{,\hspace{0.25em}\sa@authorformat[#1]{#2}}}%
+    {\gappto\sa@authorlist{\sa@authorsep\sa@authorformat[#1]{#2}}}%
 }
 \newcommand{\affiliation}[2][]{%
   \ifdefempty{\sa@affiliationlist}
     {\gdef\sa@affiliationlist{\sa@affiliationformat[#1]{#2}}}
-    {\gappto\sa@affiliationlist{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace\sa@affiliationformat[#1]{#2}}}%
+    {\gappto\sa@affiliationlist{\sa@affiliationsep\sa@affiliationformat[#1]{#2}}}%
 }
 \newcommand{\contribution}[2][]{%
   \ifdefempty{\sa@contributionlist}
     {\gdef\sa@contributionlist{\sa@contributionformat[#1]{#2}}}
-    {\gappto\sa@contributionlist{,\enspace\sa@contributionformat[#1]{#2}}}%
+    {\gappto\sa@contributionlist{\sa@contributionsep\sa@contributionformat[#1]{#2}}}%
 }
 \renewcommand{\abstract}[1]{\gdef\sa@abstract{#1}}
 \newcommand{\keywords}[1]{\gdef\sa@keywords{#1}}
@@ -276,76 +285,188 @@
 }
 
 % Metadata convenience commands
+\newcommand{\sa@metalabel}[2]{#1~#2}
 \newcommand{\sa@metadataurl}[1]{\href{#1}{\textcolor{metalink}{\nolinkurl{#1}}}}
 \newcommand{\email}[1]{\href{mailto:#1}{\textcolor{metalink}{\texttt{#1}}}}
-\newcommand{\code}[1]{\metadata[\saGithubIcon~Code:]{\sa@metadataurl{#1}}}
-\newcommand{\demo}[1]{\metadata[\saPlayIcon~Demo:]{\sa@metadataurl{#1}}}
-\newcommand{\project}[1]{\metadata[\saGlobeIcon~Project:]{\sa@metadataurl{#1}}}
-\newcommand{\dataset}[1]{\metadata[\saDatabaseIcon~Data:]{\sa@metadataurl{#1}}}
-\newcommand{\correspondence}[1]{\metadata[\saEnvelopeIcon~Contact:]{#1}}
-\newcommand{\paperdate}[1]{\metadata[\saCalendarIcon~Date:]{#1}}
+\newcommand{\code}[1]{\metadata[\sa@metalabel{\saGithubIcon}{Code:}]{\sa@metadataurl{#1}}}
+\newcommand{\demo}[1]{\metadata[\sa@metalabel{\saPlayIcon}{Demo:}]{\sa@metadataurl{#1}}}
+\newcommand{\project}[1]{\metadata[\sa@metalabel{\saGlobeIcon}{Project:}]{\sa@metadataurl{#1}}}
+\newcommand{\dataset}[1]{\metadata[\sa@metalabel{\saDatabaseIcon}{Data:}]{\sa@metadataurl{#1}}}
+\newcommand{\correspondence}[1]{\metadata[\sa@metalabel{\saEnvelopeIcon}{Contact:}]{#1}}
+\newcommand{\paperdate}[1]{\metadata[\sa@metalabel{\saCalendarIcon}{Date:}]{#1}}
 \renewcommand{\date}[1]{\paperdate{#1}}
 
-\newcommand{\sa@maketitle}{%
-  \begin{tcolorbox}[
-    enhanced,
-    colback=paperbg,
-    colframe=titleframe,
-    boxrule=0.45pt,
-    arc=8pt,
-    left=0.7cm,
-    right=0.7cm,
-    top=0.45cm,
-    bottom=0.45cm,
-    before skip=0pt,
-    grow to left by=1pt,
-    grow to right by=1pt,
-    drop fuzzy shadow={black!10!white}
-  ]
-    \raggedright
-    \nohyphens
-    {\setstretch{1.35}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
-    \vskip 0.10cm
-    {\sa@authorlist\par}
-    \ifdefempty{\sa@affiliationlist}{}{%
-      \vskip 0.06cm
-      {\sa@affiliationlist\par}
-    }
-    \ifdefempty{\sa@contributionlist}{}{%
-      \vskip 0.02cm
-      {\sa@contributionlist\par}
-    }
-    \ifdefempty{\sa@abstract}{}{%
-      \vskip 0.10cm
-      {\color{rulecolor!85}\rule{\linewidth}{0.65pt}}\par
-      \vskip 0.10cm
-      {\setstretch{1.08}\small\color{titlefg}\sa@abstract\par}
-    }
-    \ifdefempty{\sa@keywords}{}{%
-      \vskip \sa@keywordsTopSkip
-      {\small\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
-    }
-    \ifdefempty{\sa@metadatalist}{}{%
-      \vskip 0.10cm
-      {\color{rulecolor!55}\rule{\linewidth}{0.45pt}}\par
-      \vskip 0.10cm
-      \begin{tcolorbox}[
-        enhanced,
-        frame hidden,
-        colback=metabg,
-        arc=5pt,
-        boxsep=0pt,
-        left=0.22cm,
-        right=0.22cm,
-        top=0.09cm,
-        bottom=0.09cm
-      ]
-        {\setstretch{1.05}\sa@metadatalist\par}
-      \end{tcolorbox}
-    }
-  \end{tcolorbox}
+\newcommand{\paperstyle}[1]{%
+  \@ifundefined{sa@maketitle@#1}{%
+    \PackageError{main}{Unknown paper style `#1'}{Available styles are fancy and simple.}%
+  }{%
+    \gdef\sa@paperstyle{#1}%
+  }%
+}
+
+\newcommand{\sa@titleblock@typography}{%
+  \renewcommand{\sa@authorformat}[2][]{%
+    {\sffamily\bfseries\color{titlefg}##2\sa@sups{##1}}%
+  }%
+  \renewcommand{\sa@affiliationformat}[2][]{%
+    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}##2}%
+  }%
+  \renewcommand{\sa@contributionformat}[2][]{%
+    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}\textit{##2}}%
+  }%
+  \renewcommand{\sa@metadataformat}[2][]{%
+    {\normalsize\sffamily\color{titlefg}\ifblank{##1}{}{\textbf{##1}\enspace}##2}%
+  }%
+  \renewcommand{\sa@authorsep}{,\hspace{0.25em}}%
+  \renewcommand{\sa@affiliationsep}{\enspace\textcolor{titlefg}{\textperiodcentered}\enspace}%
+  \renewcommand{\sa@contributionsep}{,\enspace}%
+  \renewcommand{\sa@metadatasep}{\par\vspace{0.10em}}%
+}
+
+\newcommand{\sa@simple@titleblock@typography}{%
+  \renewcommand{\sa@authorformat}[2][]{%
+    {\sffamily\bfseries\color{titlefg}##2{\normalfont\sa@sups{##1}}}%
+  }%
+  \renewcommand{\sa@affiliationformat}[2][]{%
+    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}##2}%
+  }%
+  \renewcommand{\sa@contributionformat}[2][]{%
+    {\normalsize\rmfamily\color{titlefg}\sa@sups{##1}##2}%
+  }%
+  \renewcommand{\sa@metadataformat}[2][]{%
+    {\normalsize\color{titlefg}\ifblank{##1}{}{{\sffamily\bfseries ##1}\enspace}{\normalfont\rmfamily ##2}}%
+  }%
+  \renewcommand{\sa@authorsep}{,\hspace{0.32em}}%
+  \renewcommand{\sa@affiliationsep}{,\enspace}%
+  \renewcommand{\sa@contributionsep}{,\enspace}%
+  \renewcommand{\sa@metadatasep}{\par\vspace{0.10em}}%
+}
+
+\newcommand{\sa@fancydivider}{%
+  {\color{rulecolor!85}\rule{\linewidth}{0.65pt}}\par\vspace{-\parskip}%
+}
+
+\newcommand{\sa@fancymetadivider}{%
+  {\color{rulecolor!55}\rule{\linewidth}{0.45pt}}\par\vspace{-\parskip}%
+}
+
+\newcommand{\sa@maketitle@fancy}{%
+  \begingroup
+    \sa@titleblock@typography
+    \begin{tcolorbox}[
+      enhanced,
+      colback=fancybg,
+      colframe=titleframe,
+      boxrule=0.45pt,
+      arc=8pt,
+      boxsep=0pt,
+      left=0.7cm,
+      right=0.7cm,
+      top=0.26cm,
+      bottom=0.28cm,
+      before skip=0pt,
+      grow to left by=1pt,
+      grow to right by=1pt,
+      drop fuzzy shadow={black!10!white}
+    ]
+      \raggedright
+      \nohyphens
+      {\setstretch{1.20}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
+      \vskip 0.14cm
+      {\setstretch{1.12}\large\sa@authorlist\par}
+      \ifdefempty{\sa@affiliationlist}{}{%
+        \vskip 0.08cm
+        {\sa@affiliationlist\par}
+      }
+      \ifdefempty{\sa@contributionlist}{}{%
+        \vskip 0.02cm
+        {\sa@contributionlist\par}
+      }
+      \ifdefempty{\sa@abstract}{}{%
+        \vskip 0.08cm
+        \sa@fancydivider
+        \vskip 0.08cm
+        {\setstretch{1.14}\large\rmfamily\color{inkfg}\sa@abstract\par}
+      }
+      \ifdefempty{\sa@keywords}{}{%
+        \vskip 0.20cm
+        {\normalsize\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
+      }
+      \ifdefempty{\sa@metadatalist}{}{%
+        \vskip 0.03cm
+        \sa@fancymetadivider
+        \vskip 0.02cm
+        \begin{tcolorbox}[
+          enhanced,
+          frame hidden,
+          colback=metabg,
+          arc=5pt,
+          boxsep=0pt,
+          left=0.22cm,
+          right=0.22cm,
+          top=0.06cm,
+          bottom=0.13cm
+        ]
+          {\setstretch{1.08}\sa@metadatalist\par}
+        \end{tcolorbox}
+      }
+    \end{tcolorbox}
+  \endgroup
   \tcbset{reset}
   \FloatBarrier
+}
+
+\newcommand{\sa@maketitle@simple}{%
+  \begingroup
+    \sa@simple@titleblock@typography
+    \renewcommand{\sa@metalabel}[2]{##2}%
+    \begin{tcolorbox}[
+      enhanced,
+      frame hidden,
+      colback=simplebg,
+      arc=10pt,
+      boxsep=0pt,
+      left=0.7cm,
+      right=0.7cm,
+      top=0.45cm,
+      bottom=0.45cm,
+      before skip=0pt,
+      grow to left by=1pt,
+      grow to right by=1pt
+    ]
+      \raggedright
+      \nohyphens
+      {\setstretch{1.20}{\huge\sffamily\bfseries\color{titlefg}\sa@title\par}}
+      \vskip 0.20cm
+      {\setstretch{1.12}\large\sa@authorlist\par}
+      \ifdefempty{\sa@affiliationlist}{}{%
+        \vskip 0.18cm
+        {\setstretch{1.05}\sa@affiliationlist\par}
+      }
+      \ifdefempty{\sa@contributionlist}{}{%
+        \vskip 0.04cm
+        {\setstretch{1.05}\sa@contributionlist\par}
+      }
+      \ifdefempty{\sa@abstract}{}{%
+        \vskip 0.45cm
+        {\setstretch{1.14}\large\rmfamily\color{inkfg}\sa@abstract\par}
+      }
+      \ifdefempty{\sa@keywords}{}{%
+        \vskip 0.25cm
+        {\normalsize\sffamily\textbf{\color{titlefg}Keywords:}\enspace\color{titlefg}\sa@keywords\par}
+      }
+      \ifdefempty{\sa@metadatalist}{}{%
+        \vskip 0.32cm
+        {\setstretch{1.08}\sa@metadatalist\par}
+      }
+    \end{tcolorbox}
+  \endgroup
+  \tcbset{reset}
+  \FloatBarrier
+}
+
+\newcommand{\sa@maketitle}{%
+  \csname sa@maketitle@\sa@paperstyle\endcsname
 }
 
 \renewcommand{\maketitle}{%
