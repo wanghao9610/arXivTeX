@@ -14,6 +14,7 @@ live in their own files under `main/`.
 - [Key Features](#features)
 - [Requirements](#requirements)
 - [Project Organization](#project-organization)
+- [Paper Styles](#paper-styles)
 - [Selectable Themes](#selectable-themes)
 - [Quick Start](#quick-start)
 - [arXiv Pre-Print](#arxiv-pre-print)
@@ -148,10 +149,22 @@ Keep wrapper and asset basenames aligned (for example,
 The same two-digit prefix scheme applies to `main/secs/`, `main/figs/`,
 `main/figs/srcs/`, `main/tabs/`, and `main/algs/`.
 
+## Paper Styles
+
+Set `\paperstyle{...}` before `\begin{document}` to choose the title panel
+layout. The template currently provides `fancy` and `simple`; below is the
+first page of the example paper rendered with each style.
+
+| `fancy` | `simple` |
+| --- | --- |
+| ![fancy style](docs/img/style-fancy.png) | ![simple style](docs/img/style-simple.png) |
+
 ## Selectable Themes
 
-Set `\papertheme{...}` to `green`, `blue`, or `black`. Below is the first page
-of the example paper rendered with each theme.
+Set `\paperstyle{...}` to `fancy` or `simple`, and set `\papercolor{...}` to
+`green`, `blue`, or `black`. The legacy `\papertheme{...}` command remains as an
+alias for `\papercolor{...}`. Below is the first page of the example paper
+rendered with each color in the default `fancy` style.
 
 | `green` | `blue` | `black` |
 | --- | --- | --- |
@@ -280,7 +293,9 @@ Use these commands before `\begin{document}`:
 
 | Command | Purpose |
 | --- | --- |
-| `\papertheme{green}` | Selects a theme. Available themes: `green`, `blue`, `black`. |
+| `\paperstyle{fancy}` | Selects the title style. Available styles: `fancy`, `simple`. |
+| `\papercolor{green}` | Selects a color. Available colors: `green`, `blue`, `black`. |
+| `\papertheme{green}` | Legacy alias for `\papercolor{green}`. |
 | `\title{...}` | Paper title shown in the title panel. |
 | `\author[1,2]{Name}` | Adds an author with optional affiliation markers. |
 | `\affiliation[1]{Institution}` | Adds an affiliation. |

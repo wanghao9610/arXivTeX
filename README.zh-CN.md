@@ -152,8 +152,10 @@
 
 ## 可选主题
 
-通过 `\papertheme{...}` 设置为 `green`、`blue` 或 `black`。下面展示了
-示例论文首页在三种主题下的效果。
+通过 `\paperstyle{...}` 设置为 `fancy` 或 `simple`, 通过
+`\papercolor{...}` 设置为 `green`、`blue` 或 `black`。旧的
+`\papertheme{...}` 仍作为 `\papercolor{...}` 的别名保留。下面展示了
+示例论文首页在默认 `fancy` 样式下三种颜色的效果。
 
 | `green` | `blue` | `black` |
 | --- | --- | --- |
@@ -279,7 +281,9 @@ CVPR、ICCV 或 NeurIPS。
 
 | 命令 | 作用 |
 | --- | --- |
-| `\papertheme{green}` | 选择主题。可选值:`green`、`blue`、`black`。 |
+| `\paperstyle{fancy}` | 选择标题样式。可选值:`fancy`、`simple`。 |
+| `\papercolor{green}` | 选择颜色。可选值:`green`、`blue`、`black`。 |
+| `\papertheme{green}` | 旧接口, 等价于 `\papercolor{green}`。 |
 | `\title{...}` | 标题面板中显示的论文标题。 |
 | `\author[1,2]{Name}` | 添加作者,可选带单位编号标记。 |
 | `\affiliation[1]{Institution}` | 添加所属单位。 |
