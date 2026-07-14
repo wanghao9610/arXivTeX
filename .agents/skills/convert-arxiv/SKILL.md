@@ -1,15 +1,15 @@
 ---
-name: make-arxiv
-description: Package the arXivTeX paper in main/ into a flattened, submission-ready copy for arXiv (arXiv/main.tex plus assets and MANIFEST.txt). Use when the user asks to run `make arxiv`, prepare an arXiv preprint/submission, flatten the paper, or refresh the arXiv/ output after editing main/.
+name: convert-arxiv
+description: Package the arXivTeX paper in main/ into a flattened, submission-ready copy for arXiv (arXiv/main.tex plus assets and MANIFEST.txt). Use when the user asks to run `make convert-arxiv`, prepare an arXiv preprint/submission, flatten the paper, or refresh the arXiv/ output after editing main/.
 ---
 
-# make-arxiv
+# convert-arxiv
 
-Wraps this repo's `make arxiv` target: flattens `main/main.tex` (via
+Wraps this repo's `make convert-arxiv` target: flattens `main/main.tex` (via
 `latexpand`) into a single-entry-point, submission-ready copy under
 `arXiv/`, then verifies the result actually compiles standalone before
 handing it back. Unlike `convert-template`, there's no venue-macro
-reasoning here — `make arxiv` is a deterministic script; this skill's
+reasoning here — `make convert-arxiv` is a deterministic script; this skill's
 job is to run it, catch the failure modes a human would otherwise only
 notice after uploading to arXiv, and report clearly. Never modify
 `main/` or `main/main.bib`; `arXiv/` is fully regenerated output.
@@ -17,7 +17,7 @@ notice after uploading to arXiv, and report clearly. Never modify
 ## When to use
 
 Trigger when the user asks to:
-- Run `make arxiv`, or "package"/"flatten"/"export the paper for arXiv".
+- Run `make convert-arxiv`, or "package"/"flatten"/"export the paper for arXiv".
 - Prepare an arXiv preprint or submission-ready copy of the paper.
 - Refresh `arXiv/` after editing `main/`.
 
@@ -33,10 +33,10 @@ user wants non-default overrides:
 ## Workflow
 
 1. **Check prerequisites.** Confirm `latexpand` and `perl` are on
-   `PATH`. `make arxiv` already hard-fails with a clear message if
+   `PATH`. `make convert-arxiv` already hard-fails with a clear message if
    `latexpand` is missing — surface that message rather than guessing
    at a fix. Both ship with most TeX Live installs.
-2. **Run the target.** From the repo root: `make arxiv` (add
+2. **Run the target.** From the repo root: `make convert-arxiv` (add
    `MAIN=`/`ARXIV_DIR=` overrides if established above). This wipes
    and regenerates the output directory every time — never treat
    `arXiv/` as something to hand-edit and preserve across runs.
@@ -78,7 +78,7 @@ user wants non-default overrides:
   this repo's `AGENTS.md`.
 - Never hand-edit files inside `arXiv/` as a "fix" — it is regenerated
   byte-for-byte on every run, so any real fix belongs in `main/`
-  followed by re-running `make arxiv`.
+  followed by re-running `make convert-arxiv`.
 - Don't fabricate or guess at missing assets; report the gap instead.
 - This only flattens for arXiv. For venue-specific submission
   templates (CVPR/ICCV/NeurIPS/...), use the `convert-template` skill

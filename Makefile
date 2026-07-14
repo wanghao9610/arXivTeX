@@ -4,13 +4,13 @@ MAIN ?= main.tex
 OUT_DIR ?= .temp
 ARXIV_DIR ?= arXiv
 
-.PHONY: all arxiv
+.PHONY: all convert-arxiv
 
 all:
 	mkdir -p $(OUT_DIR)
 	cd $(MAIN_DIR) && $(LATEXMK) -pdf -outdir=$(abspath $(OUT_DIR)) $(MAIN)
 
-arxiv:
+convert-arxiv:
 	@command -v latexpand >/dev/null 2>&1 || { printf 'latexpand is required. Install TeX Live/MacTeX or add latexpand to PATH.\n' >&2; exit 1; }
 	@test -f $(MAIN_DIR)/$(MAIN) || { printf 'entry file not found: $(MAIN_DIR)/$(MAIN)\n' >&2; exit 1; }
 	mkdir -p $(ARXIV_DIR)

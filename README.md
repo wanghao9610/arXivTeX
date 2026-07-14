@@ -33,7 +33,7 @@ live in their own files under `main/`.
 - **Paper Helpers**: `\parahead`, `\headbf`, `\tablestyle`, `\cmark`,
   `\xmark`, compact table columns, `cleveref`, and `natbib`.
 - **Portable Fonts**: Standard TeX Live fonts only, no external assets.
-- **Effortless Conversion**: the `make-arxiv` skill for an [arXiv Pre-print](#arxiv-pre-print); the `convert-template` skill for
+- **Effortless Conversion**: the `convert-arxiv` skill for an [arXiv Pre-print](#arxiv-pre-print); the `convert-template` skill for
   [Venue Templates](#venue-template).
 
 ## Requirements
@@ -42,7 +42,7 @@ live in their own files under `main/`.
   `PATH`. The class loads common packages such as `fontawesome5`,
   `nicematrix`, `siunitx`, and `tcolorbox`, so a full/`scheme-full` install
   avoids missing-package errors.
-- `latexpand` and `perl` for `make arxiv` (both ship with most TeX Live
+- `latexpand` and `perl` for `make convert-arxiv` (both ship with most TeX Live
   installs).
 - Bibliography entries are compiled automatically by `latexmk` from
   `main/main.bib` using the `unsrtnat` style; no separate BibTeX setup is
@@ -189,18 +189,18 @@ cd main && latexmk -pdf -outdir=../.temp main.tex
 Prepare a flattened arXiv source bundle:
 
 ```bash
-make arxiv
+make convert-arxiv
 ```
 
 This writes the flattened upload entry file directly to `arXiv/main.tex`.
 
 ## arXiv Pre-print
 
-Run `make arxiv` after editing to produce a flattened, submission-ready copy
-of the paper. A `make-arxiv` skill (bundled for Claude Code, Codex, Cursor,
-and other agents under `.claude/skills/make-arxiv/`,
-`.codex/skills/make-arxiv/`, `.cursor/skills/make-arxiv/`, and
-`.agents/skills/make-arxiv/`) automates this with prerequisite checks and a
+Run `make convert-arxiv` after editing to produce a flattened, submission-ready copy
+of the paper. A `convert-arxiv` skill (bundled for Claude Code, Codex, Cursor,
+and other agents under `.claude/skills/convert-arxiv/`,
+`.codex/skills/convert-arxiv/`, `.cursor/skills/convert-arxiv/`, and
+`.agents/skills/convert-arxiv/`) automates this with prerequisite checks and a
 standalone-compile verification pass:
 
 1. Edit the paper under `main/` as usual, then ask your agent to package it,
@@ -209,9 +209,9 @@ standalone-compile verification pass:
 
    or
 
-   > Run make arxiv and confirm the output compiles.
+   > Run make convert-arxiv and confirm the output compiles.
 2. The agent confirms `latexpand` and `perl` are on `PATH`, runs
-   `make arxiv`, and checks the generated `arXiv/MANIFEST.txt` against the
+   `make convert-arxiv`, and checks the generated `arXiv/MANIFEST.txt` against the
    actual output.
 3. It compiles `arXiv/main.tex` standalone (inside `arXiv/`, not `main/`) to
    confirm the flattened copy has no hidden dependency on files outside
@@ -221,7 +221,7 @@ standalone-compile verification pass:
    fully regenerated on every run — and ask the agent to re-run.
 5. Submit the contents of `arXiv/`; the entry point is `arXiv/main.tex`.
 
-You can also skip the agent and run `make arxiv` yourself:
+You can also skip the agent and run `make convert-arxiv` yourself:
 
 - The command runs `latexpand main.tex > ../arXiv/main.tex` from `main/`, then
   fills out the rest of `arXiv/` with the local class, bibliography, and
@@ -245,7 +245,7 @@ A few things to keep in mind:
 Advanced usage — override the entry point or output directory:
 
 ```bash
-MAIN=submission.tex ARXIV_DIR=arXiv-submission make arxiv
+MAIN=submission.tex ARXIV_DIR=arXiv-submission make convert-arxiv
 ```
 
 ## Venue Template
