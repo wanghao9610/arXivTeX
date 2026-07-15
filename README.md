@@ -157,7 +157,7 @@ gallery below shows the first page of the example paper rendered with every
 current style and color combination.
 
 | Style | `green` | `blue` | `black` |
-| --- | --- | --- | --- |
+| --- | :---: | :---: | :---: |
 | `fancy` | ![fancy green](docs/imgs/fancy-green.png) | ![fancy blue](docs/imgs/fancy-blue.png) | ![fancy black](docs/imgs/fancy-black.png) |
 | `simple` | ![simple green](docs/imgs/simple-green.png) | ![simple blue](docs/imgs/simple-blue.png) | ![simple black](docs/imgs/simple-black.png) |
 
